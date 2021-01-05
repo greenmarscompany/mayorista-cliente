@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        android:layout_marginBottom="2dp"
+        app:cardElevation="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/Button_15_Kilos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/custom_button_outline"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="15 Kilos"
+                android:textColor="@color/frii_Background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/Button_45_Kilos"
+                app:layout_constraintStart_toEndOf="@+id/ProductGasImage"
+                app:layout_constraintTop_toBottomOf="@+id/Button_5_Kilos" />
+
+            <Button
+                android:id="@+id/Button_10_Kilos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/custom_button_outline"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="10 Kilos"
+                android:textColor="@color/frii_Background"
+                app:layout_constraintBottom_toTopOf="@+id/Button_45_Kilos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/Button_5_Kilos"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+            <Button
+                android:id="@+id/Button_5_Kilos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/custom_button_outline"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="5 Kilos"
+                android:textColor="@color/frii_Background"
+                app:layout_constraintBottom_toTopOf="@+id/Button_15_Kilos"
+                app:layout_constraintEnd_toStartOf="@+id/Button_10_Kilos"
+                app:layout_constraintStart_toEndOf="@+id/ProductGasImage"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+            <ImageView
+                android:id="@+id/ProductGasImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginEnd="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/GasDetailName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_launcher_background" />
+
+            <TextView
+                android:id="@+id/GasDetailName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="3dp"
+                android:gravity="center"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="Seleccione de su peso preferido"
+                android:textColor="@color/marcasTitle"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/textView11"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ProductGasImage"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/Button_45_Kilos"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/custom_button_outline"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="45 Kilos"
+                android:textColor="@color/frii_Background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/Button_15_Kilos"
+                app:layout_constraintTop_toBottomOf="@+id/Button_10_Kilos" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Seleccione su peso preferido"
+                app:layout_constraintBottom_toTopOf="@+id/Button_10_Kilos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ProductGasImage"
+                app:layout_constraintTop_toBottomOf="@+id/GasDetailName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

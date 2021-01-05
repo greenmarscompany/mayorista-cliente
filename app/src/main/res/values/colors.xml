@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorSplash">#1b6bd4</color>
+    <color name="marcasTitle">#000</color>
+    <color name="buttonAddCart">#46c406</color>
+    <color name="fondoitems">#2979ff</color>
+    <color name="textTitleButton">#fff</color>
+    <color name="deleteFondo">#f00</color>
+    <color name="subtitle">#9b9b9b</color>
+    <color name="frii_Background">#2979ff</color>
+
+    <color name="warning">#bb9a00</color>
+
+
+
+    <!-- colores del navigation  -->
+    <color name="setting_background">#5EA3DD</color>
+
+
+    <color name="Green">#008000</color>
+    <color name="Blue">#0000FF</color>
+    <color name="Fuchsia">#FF00FF</color>
+    <color name="LightBlue">#51d1f6</color>
+    <color name="Gray">#9b9b9b</color>
+    <color name="black">#000</color>
+    <color name="white">#fff</color>
+    <color name="red">#f00</color>y
+    <color name="orange">#cc8400</color>
+
+    <color name="colorShimmer">#03CCCC</color>
+    <color name="colorShimmerHighlight">#E6F5F4</color>
+</resources>

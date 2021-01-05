@@ -1,0 +1,78 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/frii_Background</item>
+        <item name="colorPrimaryDark">#004ecb</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/frii_Background</item>
+        <item name="colorPrimaryDark">#004ecb</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="RadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/Blue</item>
+        <item name="android:textColorSecondary">@color/deleteFondo</item>
+        <item name="colorControlNormal">@color/black</item>
+    </style>
+
+    <style name="Base.TextAppearance.AppCompat.Medium" tools:ignore="PrivateResource">
+        <item name="android:textSize">@dimen/abc_text_size_medium_material</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <style name="SplashThemeOne" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="colorPrimaryDark">#004ecb</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="ThemeDefault" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimaryDark">#004ecb</item>
+        <item name="colorAccent">#75a7ff</item>
+    </style>
+
+    <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorPrimary">@color/frii_Background</item>
+        <item name="colorPrimaryDark">#004ecb</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <!--Text Input Layout-->
+    <style name="Widget.App.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="hintTextColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+        <item name="colorPrimary">#fff</item>
+        <item name="colorOnSurface">#ffffff</item>
+        <item name="colorError">#ff3d00</item>
+    </style>
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+    <!--/.TextInputLayout-->
+
+    <style name="MtButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="materialThemeOverlay">@color/white</item>
+    </style>
+</resources>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:padding="15dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:padding="4dp"
+        app:srcCompat="@drawable/ic_account_circle" />
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/marcasTitle"
+        android:textStyle="bold"
+        android:padding="5dp"
+        android:text="Pedido Entregado :)" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calificar"
+        android:layout_marginTop="5dp"
+        android:padding="5dp" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:numStars="5"
+        android:layout_gravity="center"
+        android:rating="0" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtAgendarPedido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agendar mi próximo pedido: (Opcional)"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:textColor="@color/frii_Background"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/seleccionarfecha"
+            android:layout_width="90dp"
+            android:layout_height="45dp"
+            android:background="@drawable/custom_cantidad"
+
+            android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnCancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cancelar"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="#fff"
+            android:textColor="@color/fondoitems" />
+
+        <Button
+            android:id="@+id/btnAgenda"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@color/fondoitems"
+            android:text="Guardar"
+            android:textColor="@color/textTitleButton" />
+    </LinearLayout>
+</LinearLayout>

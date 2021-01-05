@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Mayorista</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+
+    <!-- navigation  name-->
+    <string name="app_name_title">MAYORISTA</string>
+    <string name="welcome">BIENVENIDO</string>
+
+
+    <!-- login -->
+
+    <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
+
+    <!-- new account -->
+    <string name="Nombre">Nombre o Razo Social</string>
+    <string name="terminos_condiciones"><u>terminos y condiciones</u></string>
+
+    <!--  Forgotted password-->
+    <string name="email_forgottedpassword">Ingrese el correo con el que creo la cuenta</string>
+    <string name="back_forgotted_password">Atras</string>
+    <string name="send_forgotted_password">Enviar</string>
+
+    <string name="warning">Se recomienda realizar pedidos independientes por  cada producto.</string>
+
+
+    <!-- procesar pedido cart activity-->
+    <string name="pay_credit_card">Pagaré con tarjeta en casa</string>
+    <string name="pay_yape">Pagaré con Yape</string>
+    <string name="pay_tunki">Pagaré con Tunki</string>
+    <string name="pay_money">Pagaré con efectivo en casa</string>
+
+
+    <string name="address">Escoge el lugar de entrega: </string>
+
+
+    <!--    start messages    -->
+
+    <string name="goto_shopping">Ir a Comprar</string>
+    <string name="des_logo_login">Mayorista Cliente</string>
+    <string name="pass_olvidaste">¿Olvidaste tu contraseña?</string>
+    <string name="btn_login">Ingresar</string>
+
+</resources>

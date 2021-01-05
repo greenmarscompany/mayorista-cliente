@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <!--<TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:gravity="center"
+            android:text="Proceder con el pedido"
+            android:textColor="@color/marcasTitle"
+            android:textSize="18sp"
+            android:textStyle="bold" />-->
+
+
+        <RadioGroup
+            android:id="@+id/groupMetodo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rbTunki"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_tunki_30x30px_04"
+                android:drawablePadding="10dp"
+                android:layoutDirection="rtl"
+                android:padding="5dp"
+                android:text="@string/pay_tunki"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                android:theme="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/rbYape"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic__yape"
+                android:drawablePadding="10dp"
+                android:layoutDirection="rtl"
+                android:padding="5dp"
+                android:text="@string/pay_yape"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                android:theme="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/rbTarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_pago_con_tarjeta_30x30px_07"
+                android:drawablePadding="10dp"
+                android:layoutDirection="rtl"
+                android:padding="5dp"
+
+                android:text="@string/pay_credit_card"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                android:theme="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/rbEfectivo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:drawableLeft="@drawable/ic_pago_en_efectivo_30x30px_08_08"
+                android:drawablePadding="10dp"
+                android:layoutDirection="rtl"
+                android:padding="5dp"
+                android:text="@string/pay_money"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+
+                android:theme="@style/RadioButton" />
+
+        </RadioGroup>
+
+
+        <RadioGroup
+            android:id="@+id/groupMetodoEfectivo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/custom_radiogroup"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/RadioButtonBoleta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="3dp"
+                android:checked="true"
+                android:text="Boleta"
+                android:theme="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/RadioButtonFactura"
+                android:layout_width="92dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="4dp"
+                android:text="Factura"
+                android:theme="@style/RadioButton" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/custom_warning"
+            android:drawablePadding="10dp"
+            android:padding="5dp"
+            android:text="@string/warning"
+            android:textColor="@color/warning"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:drawableLeftCompat="@drawable/ic_alert_circle_outline"
+            app:layout_constraintBottom_toTopOf="@+id/ButtonCartProcesarPedido"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/ButtonCartProcesarPedido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/custom_button"
+            android:onClick="procesarpedido"
+            android:text="Confirmar Pedido"
+            android:textColor="@color/textTitleButton"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

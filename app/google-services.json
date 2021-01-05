@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "190874690715",
+    "firebase_url": "https://greenmars.firebaseio.com",
+    "project_id": "greenmars",
+    "storage_bucket": "greenmars.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190874690715:android:0ac6f77e294e2e3635d23e",
+        "android_client_info": {
+          "package_name": "com.greenmars.mayoristadistribuidor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190874690715-5i4p0q3vuhml0gnttroo8cnprbbl35kg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIlkE79QS8w-Fi37eShFNFBXYaBdzJn0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190874690715-5i4p0q3vuhml0gnttroo8cnprbbl35kg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190874690715:android:f64276967aed2feb35d23e",
+        "android_client_info": {
+          "package_name": "com.greenmarscompany.mayoristacliente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190874690715-5i4p0q3vuhml0gnttroo8cnprbbl35kg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIlkE79QS8w-Fi37eShFNFBXYaBdzJn0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190874690715-5i4p0q3vuhml0gnttroo8cnprbbl35kg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
