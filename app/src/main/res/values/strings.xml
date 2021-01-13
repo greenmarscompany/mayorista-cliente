@@ -26,7 +26,7 @@
     <string name="back_forgotted_password">Atras</string>
     <string name="send_forgotted_password">Enviar</string>
 
-    <string name="warning">Se recomienda realizar pedidos independientes por  cada producto.</string>
+    <string name="warning_cart">¡Confirma tu pedido y el distribuidor más cercano y rápido te lo llevará!</string>
 
 
     <!-- procesar pedido cart activity-->
