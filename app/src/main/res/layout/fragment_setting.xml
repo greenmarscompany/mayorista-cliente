@@ -165,8 +165,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
-                        android:hint="Número de telefono"
+                        android:hint="Número de telefono principal"
                         android:inputType="phone"
+                        android:maxLength="9"
                         android:textColor="#555555" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -180,8 +181,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
-                        android:hint="Número de telefono"
+                        android:hint="Número de telefono secundario (Opcional)"
                         android:inputType="phone"
+                        android:maxLength="9"
                         android:textColor="#555555" />
                 </com.google.android.material.textfield.TextInputLayout>
 
