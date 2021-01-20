@@ -113,10 +113,10 @@ public class InicioMapsActivity extends AppCompatActivity implements NavigationV
         FragmentTransaction transaction = manager.beginTransaction();
         switch (menuItem.getItemId()) {
             case R.id.home:
-                /*transaction.replace(R.id.navigationContainer, new MainFragment());
-                transaction.commit();
-                Toast.makeText(this, "home", Toast.LENGTH_SHORT).show();
-                break;*/
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                startActivity(intent);
+                System.out.println("ingrsando a este command");
+                break;
             case R.id.account:
                 Intent intent1 = new Intent(getBaseContext(), PerfilActivity.class);
                 intent1.putExtra("id", R.id.account);
@@ -124,11 +124,11 @@ public class InicioMapsActivity extends AppCompatActivity implements NavigationV
                 Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.Perfil:
-                Intent intent = new Intent(getBaseContext(), PerfilActivity.class);
+                Intent intent2 = new Intent(getBaseContext(), PerfilActivity.class);
                 String title = menuItem.getTitle().toString();
-                intent.putExtra("name", title);
-                intent.putExtra("id", R.id.Perfil);
-                startActivity(intent);
+                intent2.putExtra("name", title);
+                intent2.putExtra("id", R.id.Perfil);
+                startActivity(intent2);
                 return true;
             case R.id.MisPedidos:
                 Intent intent3 = new Intent(getBaseContext(), PedidosActivity.class);

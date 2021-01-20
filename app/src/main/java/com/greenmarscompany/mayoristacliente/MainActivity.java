@@ -174,9 +174,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         if (menuItem.getItemId() == R.id.home) {
-            transaction.replace(R.id.navigationContainer, new MainFragment());
-            transaction.commit();
-            Toast.makeText(this, "home", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
         }
         if (menuItem.getItemId() == R.id.account) {
             //transaction.replace(R.id.navigationContainer,new AccountFragment());
