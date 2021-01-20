@@ -115,7 +115,7 @@ public class InicioMapsActivity extends AppCompatActivity implements NavigationV
             case R.id.home:
                 Intent intent = new Intent(getBaseContext(), MainActivity.class);
                 startActivity(intent);
-                System.out.println("ingrsando a este command");
+                
                 break;
             case R.id.account:
                 Intent intent1 = new Intent(getBaseContext(), PerfilActivity.class);
