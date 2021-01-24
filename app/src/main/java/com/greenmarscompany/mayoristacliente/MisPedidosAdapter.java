@@ -407,7 +407,7 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
             }
 
             RequestQueue queue = Volley.newRequestQueue(context);
-            ;
+
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                     new Response.Listener<JSONObject>() {
                         @Override

@@ -165,6 +165,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="20dp"
+                    android:textSize="16sp"
                     android:text="Total a pagar: " />
 
                 <TextView
@@ -173,66 +174,67 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="0.00" />
+                    android:text="0.00"
+                    android:textColor="#000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/ButtonLLamarPedido"
-                android:layout_width="wrap_content"
-                android:layout_height="22dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/custom_guardar_setting"
-                android:padding="3dp"
-                android:text="Llamar"
-                android:textColor="@color/textTitleButton"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
-
-            <!--<Button
-                android:id="@+id/buttonRepedir"
-                android:layout_width="wrap_content"
-                android:layout_height="22dp"
-                android:background="@drawable/custom_guardar_setting"
-                android:padding="3dp"
-                android:text="Repedir"
-                android:textColor="@color/textTitleButton"
-                android:visibility="gone" />-->
-
-            <Button
-                android:id="@+id/ButtonMensajePedido"
-                android:layout_width="wrap_content"
-                android:layout_height="22dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/custom_guardar_setting"
-                android:padding="3dp"
-                android:text="Mensaje"
-                android:textColor="@color/textTitleButton"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ButtonLLamarPedido"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
-
-            <Button
-                android:id="@+id/ButtonCancelarPedido"
-                android:layout_width="wrap_content"
-                android:layout_height="22dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/custom_button_delete"
-                android:text="cancelar"
-                android:textColor="@color/textTitleButton"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:showDividers="middle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/ButtonMensajePedido"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
 
+                <Button
+                    android:id="@+id/ButtonLLamarPedido"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/custom_guardar_setting"
+                    android:padding="3dp"
+                    android:text="Llamar"
+                    android:textColor="@color/textTitleButton" />
+
+                <!--<Button
+                    android:id="@+id/buttonRepedir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:background="@drawable/custom_guardar_setting"
+                    android:padding="3dp"
+                    android:text="Repedir"
+                    android:textColor="@color/textTitleButton"
+                    android:visibility="gone" />-->
+
+                <Button
+                    android:id="@+id/ButtonMensajePedido"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/custom_guardar_setting"
+                    android:padding="3dp"
+                    android:text="Mensaje"
+                    android:textColor="@color/textTitleButton" />
+
+                <Button
+                    android:id="@+id/ButtonCancelarPedido"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/custom_button_delete"
+                    android:padding="3dp"
+                    android:text="cancelar"
+                    android:textColor="@color/textTitleButton" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.cardview.widget.CardView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
