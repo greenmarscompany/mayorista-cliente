@@ -23,12 +23,12 @@
 
         <ImageView
             android:id="@+id/ProductGasImage"
-            android:layout_width="0dp"
+            android:layout_width="140dp"
             android:layout_height="150dp"
             android:layout_marginEnd="3dp"
+            android:layout_weight="1"
             android:background="#F2F4F9"
             android:padding="5dp"
-            android:layout_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/GasDetailName"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,16 +54,16 @@
             app:layout_constraintStart_toEndOf="@+id/ProductGasImage"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <Button
             android:id="@+id/Button_45_Kilos"
-            android:layout_width="35dp"
+            android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/custom_bottom_cart"
             android:padding="5dp"
-            android:src="@drawable/ic_shopping_cart"
-            android:textColor="@color/textTitleButton"
+            android:text="Agregar"
+            android:textColor="@color/color_one"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

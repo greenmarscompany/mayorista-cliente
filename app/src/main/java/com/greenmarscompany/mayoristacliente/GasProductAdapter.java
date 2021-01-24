@@ -43,6 +43,8 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
 
     private final String COLOR_ACTIVADO = "#1E82D9";
     private final String COLOR_DESACTIVADO = "#D5E5FF";
+    private final String COLOR_ACTIVADO_TEXTO = "#FFFFFF";
+    private final String COLOR_DESACTIVADO_TEXTO = "#1469D9";
 
     private final java.util.List<Product> products;
     private Context context;
@@ -77,7 +79,7 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
         return products.size();
     }
 
-    public void setChangeRadioButton(final Product product, final String peso, final ImageButton productGasAddCart) {
+    public void setChangeRadioButton(final Product product, final String peso, final Button productGasAddCart) {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = Global.URL_HOST + "/product/markes/" + product.getMarkeId();
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -112,10 +114,12 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
 
                         if (IsExistsButton) {
                             productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                            productGasAddCart.setImageResource(R.drawable.ic_cart_card);
+                            productGasAddCart.setText("Agregado");
+                            productGasAddCart.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
                         } else {
                             productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_DESACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                            productGasAddCart.setImageResource(R.drawable.ic_shopping_cart);
+                            productGasAddCart.setText("Agregar");
+                            productGasAddCart.setTextColor(Color.parseColor(COLOR_DESACTIVADO_TEXTO));
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -131,7 +135,7 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
         android.widget.TextView gasProductTitle;
         ImageView gasProductImage;
         EditText productGasCantidad;
-        ImageButton productGasAddCart;
+        Button productGasAddCart;
         RadioGroup radioGroup;
         RadioButton peso;
 
@@ -209,7 +213,8 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
                             }
                             if (IsExistsButton) {
                                 productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                                productGasAddCart.setImageResource(R.drawable.ic_cart_card);
+                                productGasAddCart.setText("Agregado");
+                                productGasAddCart.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -281,7 +286,8 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
                                                         .addCart(eCart);
 
                                                 productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                                                productGasAddCart.setImageResource(R.drawable.ic_cart_card);
+                                                productGasAddCart.setText("Agregado");
+                                                productGasAddCart.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
                                                 ((Activity) context).invalidateOptionsMenu();
                                             } else {
                                                 Toast.makeText(context, "Ingrese una cantidad mayor a 0", Toast.LENGTH_LONG).show();
@@ -294,7 +300,8 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
 
                                             ((Activity) context).invalidateOptionsMenu();
                                             productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_DESACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                                            productGasAddCart.setImageResource(R.drawable.ic_shopping_cart);
+                                            productGasAddCart.setText("Agregar");
+                                            productGasAddCart.setTextColor(Color.parseColor(COLOR_DESACTIVADO_TEXTO));
                                         }
                                     } else
                                         Toast.makeText(context, "El producto no esta en la base de datos", Toast.LENGTH_SHORT).show();

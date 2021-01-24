@@ -31,6 +31,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
 
     private final String COLOR_ACTIVADO = "#1E82D9";
     private final String COLOR_DESACTIVADO = "#D5E5FF";
+    private final String COLOR_ACTIVADO_TEXTO = "#FFFFFF";
+    private final String COLOR_DESACTIVADO_TEXTO = "#1469D9";
 
     ArrayList<Product> products;
     private Context context;
@@ -85,7 +87,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
     class viewHolder extends RecyclerView.ViewHolder {
         android.widget.TextView productTilte, productDescription, add_badge;
         ImageView productImage;
-        ImageButton productButtonAdd;
+        Button productButtonAdd;
         EditText productCantidad;
         android.view.View view;
 
@@ -123,7 +125,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
             }
             if (IsExistsButton) {
                 productButtonAdd.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                productButtonAdd.setImageResource(R.drawable.ic_cart_card);
+                productButtonAdd.setText("Agregado");
+                productButtonAdd.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
             }
             productButtonAdd.setOnClickListener(new android.view.View.OnClickListener() {
 
@@ -173,7 +176,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                                     .addCart(eCart);
 
                             productButtonAdd.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                            productButtonAdd.setImageResource(R.drawable.ic_cart_card);
+                            productButtonAdd.setText("Agregado");
+                            productButtonAdd.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
                             ((Activity) context).invalidateOptionsMenu();
                         } else {
                             Toast.makeText(context, "Ingrese una cantidad mayor a 0", Toast.LENGTH_LONG).show();
@@ -186,7 +190,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                                 .deleteCart(oECart);
 
                         productButtonAdd.getBackground().setColorFilter(Color.parseColor(COLOR_DESACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                        productButtonAdd.setImageResource(R.drawable.ic_shopping_cart);
+                        productButtonAdd.setText("Agregar");
+                        productButtonAdd.setTextColor(Color.parseColor(COLOR_DESACTIVADO_TEXTO));
                     }
                 }
             });

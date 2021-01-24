@@ -32,4 +32,8 @@
 
     <color name="colorShimmer">#03CCCC</color>
     <color name="colorShimmerHighlight">#E6F5F4</color>
+
+    <color name="color_one">#1469D9</color>
+    <color name="color_two">#1E82D9</color>
+    <color name="light_one">#A0CCF2</color>
 </resources>
