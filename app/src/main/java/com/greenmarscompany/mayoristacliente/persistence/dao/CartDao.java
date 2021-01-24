@@ -28,4 +28,7 @@ public interface CartDao {
 
     @Query("DELETE FROM cart")
     void deleteAllCart();
+
+    @Query("SELECT count(uid) FROM cart")
+    int getCountCart();
 }

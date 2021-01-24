@@ -108,12 +108,12 @@ public class Cart extends AppCompatActivity implements NavigationView.OnNavigati
             //transaction.commit();
             Toast.makeText(this, "ingreso a home", Toast.LENGTH_SHORT).show();
         }
-        if (menuItem.getItemId() == R.id.account) {
+        /*if (menuItem.getItemId() == R.id.account) {
             intent = new Intent(getBaseContext(), PerfilActivity.class);
             intent.putExtra("id", R.id.account);
             startActivity(intent);
             Toast.makeText(this, "ingreso a account", Toast.LENGTH_SHORT).show();
-        }
+        }*/
         if (menuItem.getItemId() == R.id.Perfil) {
             transaction.replace(R.id.navigationContainer, new SettingFragment());
             transaction.addToBackStack(null);

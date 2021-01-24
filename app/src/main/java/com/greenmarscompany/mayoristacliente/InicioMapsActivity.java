@@ -1,5 +1,6 @@
 package com.greenmarscompany.mayoristacliente;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -12,10 +13,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.greenmarscompany.mayoristacliente.Login.LoginActivity;
 import com.greenmarscompany.mayoristacliente.persistence.DatabaseClient;
+import com.greenmarscompany.mayoristacliente.persistence.Session;
+import com.greenmarscompany.mayoristacliente.persistence.dao.CartDao;
+import com.greenmarscompany.mayoristacliente.persistence.entity.Acount;
 import com.greenmarscompany.mayoristacliente.persistence.entity.ECart;
 import com.greenmarscompany.mayoristacliente.utils.CartChangeColor;
 import com.google.android.material.navigation.NavigationView;
@@ -32,7 +42,10 @@ public class InicioMapsActivity extends AppCompatActivity implements NavigationV
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     NavigationView navigationView;
+    android.widget.TextView CerrarSecion, lblUsername, lblEmail;
 
+    TextView textCartItemCount;
+    int mCartItemCount = 0;
 
     com.google.android.material.floatingactionbutton.FloatingActionButton flo_order_pedido;
 
@@ -60,50 +73,60 @@ public class InicioMapsActivity extends AppCompatActivity implements NavigationV
         transaction.add(R.id.navigationContainer, new MainFragment());
         transaction.commit();
 
+        llenarInfoUsuario();
+        //-- Cierra la sesión
+        CerrarSecion = findViewById(R.id.CerrarSesion);
+        CerrarSecion.setOnClickListener(v -> {
+            Session session = new Session(getApplicationContext());
+            session.destroySession();
 
-        CartChangeColor.flo_cart = findViewById(R.id.fad_cart_order);
-        CartChangeColor.badge_count_cart = findViewById(R.id.badge_count_cart);
+            DatabaseClient.getInstance(getApplicationContext())
+                    .getAppDatabase()
+                    .getCartDao()
+                    .deleteAllCart();
 
-        CartChangeColor.flo_cart.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                Intent intent = new Intent(getApplicationContext(), Cart.class);
-                startActivity(intent);
-                //finish();
-            }
-        });
-
-        flo_order_pedido = findViewById(R.id.siquiente_pedidos);
-        flo_order_pedido.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                Intent intent = new Intent(getBaseContext(), PedidosActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onResume() {
         super.onResume();
-        java.util.List<ECart> cartDetails = DatabaseClient.getInstance(this)
-                .getAppDatabase()
-                .getCartDao()
-                .getCarts();
-        if (cartDetails.size() > 0) {
-            CartChangeColor.flo_cart.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor("#64dd17")));
-            CartChangeColor.badge_count_cart.setVisibility(android.view.View.VISIBLE);
-            CartChangeColor.badge_count_cart.setText(DatabaseClient.getInstance(this)
-                    .getAppDatabase()
-                    .getCartDao()
-                    .getCarts().size() + "");
-        } else {
-            CartChangeColor.flo_cart.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor("#065FD3")));
-            CartChangeColor.badge_count_cart.setVisibility(android.view.View.INVISIBLE);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.navigation_actions, menu);
+
+        final MenuItem menuItem = menu.findItem(R.id.action_carrito);
+
+        View actionView = menuItem.getActionView();
+        textCartItemCount = actionView.findViewById(R.id.cart_badge);
+        actionView.setOnClickListener(v -> onOptionsItemSelected(menuItem));
+
+        llenarBadgeCarrito();
+        setupBadge();
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_pedidos) {
+            Intent intent = new Intent(getBaseContext(), PedidosActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (item.getItemId() == R.id.action_carrito) {
+            Intent intent = new Intent(getApplicationContext(), Cart.class);
+            startActivity(intent);
+            return true;
         }
 
-
+        return true;
     }
 
     @Override
@@ -111,36 +134,29 @@ public class InicioMapsActivity extends AppCompatActivity implements NavigationV
         drawerLayout.closeDrawer(GravityCompat.START);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        switch (menuItem.getItemId()) {
-            case R.id.home:
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                startActivity(intent);
-                
-                break;
-            case R.id.account:
-                Intent intent1 = new Intent(getBaseContext(), PerfilActivity.class);
-                intent1.putExtra("id", R.id.account);
-                startActivity(intent1);
-                Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.Perfil:
-                Intent intent2 = new Intent(getBaseContext(), PerfilActivity.class);
-                String title = menuItem.getTitle().toString();
-                intent2.putExtra("name", title);
-                intent2.putExtra("id", R.id.Perfil);
-                startActivity(intent2);
-                return true;
-            case R.id.MisPedidos:
-                Intent intent3 = new Intent(getBaseContext(), PedidosActivity.class);
-                startActivity(intent3);
-                break;
-
-            case R.id.mVaciarCache:
-                deleteCache(getBaseContext());
-                Toast.makeText(getBaseContext(), "Caché vaciadas correctamente", Toast.LENGTH_LONG).show();
-                break;
+        if (menuItem.getItemId() == R.id.home) {
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
+        } else if (menuItem.getItemId() == R.id.Perfil) {
+            Intent intent2 = new Intent(getBaseContext(), PerfilActivity.class);
+            String title = menuItem.getTitle().toString();
+            intent2.putExtra("name", title);
+            intent2.putExtra("id", R.id.Perfil);
+            startActivity(intent2);
+        } else if (menuItem.getItemId() == R.id.MisPedidos) {
+            Intent intent3 = new Intent(getBaseContext(), PedidosActivity.class);
+            startActivity(intent3);
+        } else if (menuItem.getItemId() == R.id.mVaciarCache) {
+            deleteCache(getBaseContext());
+            Toast.makeText(getBaseContext(), "Caché vaciadas correctamente", Toast.LENGTH_LONG).show();
         }
         return true;
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -173,6 +189,60 @@ public class InicioMapsActivity extends AppCompatActivity implements NavigationV
         } else {
             return false;
         }
+    }
+
+    private void setupBadge() {
+        if (textCartItemCount != null) {
+            if (mCartItemCount == 0) {
+                if (textCartItemCount.getVisibility() != View.GONE) {
+                    textCartItemCount.setVisibility(View.GONE);
+                }
+            } else {
+                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+                if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                    textCartItemCount.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    public void llenarBadgeCarrito() {
+        CartDao cartDao = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().getCartDao();
+        mCartItemCount = cartDao.getCountCart();
+    }
+
+    private void llenarInfoUsuario() {
+        Session session = new Session(getApplicationContext());
+        final int token = session.getToken();
+        CartDao cartDao = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().getCartDao();
+        if (token != 0) {
+            Acount acount = DatabaseClient.getInstance(getApplicationContext())
+                    .getAppDatabase()
+                    .getAcountDao()
+                    .getUser(token);
+
+            if (acount != null) {
+                android.view.View view = navigationView.getHeaderView(0);
+                lblUsername = view.findViewById(R.id.lblNombreUsuario);
+                lblEmail = view.findViewById(R.id.lblEmailUsuario);
+
+                lblUsername.setText(acount.getNombre());
+                lblEmail.setText(acount.getEmail());
+
+            } else {
+                Toast.makeText(getApplicationContext(), "Error de  loggeado", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        } else {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+            Log.e(Global.TAG, "llenarInfoUsuario: Las credenciales son invalidas");
+        }
+
     }
 
 }

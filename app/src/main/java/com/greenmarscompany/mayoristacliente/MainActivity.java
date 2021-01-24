@@ -1,5 +1,6 @@
 package com.greenmarscompany.mayoristacliente;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -11,14 +12,20 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.greenmarscompany.mayoristacliente.Login.LoginActivity;
 import com.greenmarscompany.mayoristacliente.persistence.DatabaseClient;
 import com.greenmarscompany.mayoristacliente.persistence.Session;
+import com.greenmarscompany.mayoristacliente.persistence.dao.CartDao;
 import com.greenmarscompany.mayoristacliente.persistence.entity.Acount;
 
 import com.google.android.material.navigation.NavigationView;
@@ -64,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     Boolean inicio = true;
 
+    TextView textCartItemCount;
+    int mCartItemCount = 0;
+
+
     //e
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState) {
@@ -76,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.navigationDrawer);
         navigationView = findViewById(R.id.navigationView);
 
-        // estaclecer el evento onclick de navigation
+        // establecer el evento onclick de navigation
         navigationView.setNavigationItemSelectedListener(this);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
@@ -88,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         llenarInfoUsuario();
 
         next_pedidos = findViewById(R.id.siquiente_pedidos);
-
         next_pedidos.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
@@ -98,117 +108,90 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-
-
-
-
-        /*
-        //carito de comprar
-        flo_cart = findViewById(R.id.fad_cart_order);
-        flo_cart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Cart.class);
-                startActivity(intent);
-                //finish();
-            }
-        });
-
-        flo_order_pedido = findViewById(R.id.siquiente_pedidos);
-        flo_order_pedido.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), PedidosActivity.class);
-                startActivity(intent);
-            }
-        });
-
-         */
-
-
+        //-- Cierra la sesión
         CerrarSecion = findViewById(R.id.CerrarSesion);
-        CerrarSecion.setOnClickListener(new android.view.View.OnClickListener() {
+        CerrarSecion.setOnClickListener(v -> {
+            Session session = new Session(getApplicationContext());
+            session.destroySession();
 
-            @Override
-            public void onClick(android.view.View v) {
-                Session session = new Session(getApplicationContext());
-                session.destroySession();
+            DatabaseClient.getInstance(getApplicationContext())
+                    .getAppDatabase()
+                    .getCartDao()
+                    .deleteAllCart();
 
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         updateToken();
-    }
-
-    public void badge_visible() {
-        //TextView badge_count=findViewById(R.id.badge_count);
-        badge_count.setVisibility(android.view.View.VISIBLE);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         llenarInfoUsuario();
+    }
 
-/*
-        if (inicio){
-            Intent intent=new Intent(getBaseContext(),InicioMapsActivity.class);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.navigation_actions, menu);
+
+        final MenuItem menuItem = menu.findItem(R.id.action_carrito);
+
+        View actionView = menuItem.getActionView();
+        textCartItemCount = actionView.findViewById(R.id.cart_badge);
+        actionView.setOnClickListener(v -> onOptionsItemSelected(menuItem));
+        setupBadge();
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_pedidos) {
+            Intent intent = new Intent(getBaseContext(), PedidosActivity.class);
             startActivity(intent);
-            System.out.println("inresnasp normal");
-            inicio=false;
-
+            return true;
+        } else if (item.getItemId() == R.id.action_carrito) {
+            Intent intent = new Intent(getApplicationContext(), Cart.class);
+            startActivity(intent);
+            return true;
         }
-
- */
-
-
+        return true;
+        //return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onNavigationItemSelected(@androidx.annotation.NonNull MenuItem menuItem) {
-
         drawerLayout.closeDrawer(GravityCompat.START);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         if (menuItem.getItemId() == R.id.home) {
             Intent intent = new Intent(getBaseContext(), MainActivity.class);
             startActivity(intent);
-        }
-        if (menuItem.getItemId() == R.id.account) {
-            //transaction.replace(R.id.navigationContainer,new AccountFragment());
-
-            Intent intent = new Intent(getBaseContext(), PerfilActivity.class);
-            intent.putExtra("id", R.id.account);
-            startActivity(intent);
-
-            Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
-        }
-        if (menuItem.getItemId() == R.id.Perfil) {
-
+        } else if (menuItem.getItemId() == R.id.Perfil) {
             Intent intent = new Intent(getBaseContext(), PerfilActivity.class);
             String title = menuItem.getTitle().toString();
             intent.putExtra("name", title);
             intent.putExtra("id", R.id.Perfil);
             startActivity(intent);
-        }
-        if (menuItem.getItemId() == R.id.MisPedidos) {
-
+        } else if (menuItem.getItemId() == R.id.MisPedidos) {
             Intent intent = new Intent(getBaseContext(), PedidosActivity.class);
             startActivity(intent);
-        }
-
-        if (menuItem.getItemId() == R.id.mVaciarCache) {
-
+        } else if (menuItem.getItemId() == R.id.mVaciarCache) {
             deleteCache(getBaseContext());
             Toast.makeText(getBaseContext(), "Caché vaciadas correctamente", Toast.LENGTH_SHORT).show();
         }
-
-        return false;
+        return true;
     }
 
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        invalidateOptionsMenu();
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -245,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void llenarInfoUsuario() {
         Session session = new Session(getApplicationContext());
         final int token = session.getToken();
-
+        CartDao cartDao = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().getCartDao();
         if (token != 0) {
             Acount acount = DatabaseClient.getInstance(getApplicationContext())
                     .getAppDatabase()
@@ -259,6 +242,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 lblUsername.setText(acount.getNombre());
                 lblEmail.setText(acount.getEmail());
+
+                //-- Llenamos el carrito de compras
+                mCartItemCount = cartDao.getCountCart();
+
             } else {
                 Toast.makeText(getApplicationContext(), "Error de  loggeado", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -270,9 +257,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
-            System.out.println("LAS CREDENCIALES SON INVALIDAS");
+            Log.e(Global.TAG, "llenarInfoUsuario: Las credenciales son invalidas");
         }
-
 
     }
 
@@ -301,6 +287,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return file.delete();
         } else {
             return false;
+        }
+    }
+
+    //--Ocultar en un inicio el badge
+    private void setupBadge() {
+        if (textCartItemCount != null) {
+            if (mCartItemCount == 0) {
+                if (textCartItemCount.getVisibility() != View.GONE) {
+                    textCartItemCount.setVisibility(View.GONE);
+                }
+            } else {
+                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+                if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                    textCartItemCount.setVisibility(View.VISIBLE);
+                }
+            }
         }
     }
 

@@ -6,6 +6,7 @@
     tools:context=".ProductsFragment">
 
     <com.todkars.shimmer.ShimmerRecyclerView
+        android:layout_marginTop="15dp"
         android:id="@+id/ProductsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

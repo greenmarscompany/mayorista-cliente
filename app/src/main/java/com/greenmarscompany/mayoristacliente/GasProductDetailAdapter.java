@@ -144,12 +144,6 @@ public class GasProductDetailAdapter extends RecyclerView.Adapter<GasProductDeta
                                     .addCart(eCart);
                             productButtonAdd.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor("#64dd17")));
                             productButtonAdd.setText("Agregado");
-                            CartChangeColor.flo_cart.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor("#64dd17")));
-                            CartChangeColor.badge_count_cart.setVisibility(android.view.View.VISIBLE);
-                            CartChangeColor.badge_count_cart.setText(DatabaseClient.getInstance(context)
-                                    .getAppDatabase()
-                                    .getCartDao()
-                                    .getCarts().size() + "");
                         } else {
                             Toast.makeText(context, "Ingrese una cantidad mayor a 0", Toast.LENGTH_LONG).show();
                         }
@@ -158,17 +152,6 @@ public class GasProductDetailAdapter extends RecyclerView.Adapter<GasProductDeta
                                 .getAppDatabase()
                                 .getCartDao()
                                 .deleteCart(oECart);
-                        if (DatabaseClient.getInstance(context)
-                                .getAppDatabase()
-                                .getCartDao()
-                                .getCarts().size() == 0) {
-                            CartChangeColor.flo_cart.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor(frii_Background)));
-                            CartChangeColor.badge_count_cart.setVisibility(android.view.View.INVISIBLE);
-                        }
-                        CartChangeColor.badge_count_cart.setText(DatabaseClient.getInstance(context)
-                                .getAppDatabase()
-                                .getCartDao()
-                                .getCarts().size() + "");
                         productButtonAdd.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor(frii_Background)));
                         productButtonAdd.setText("Agregar");
                         Toast.makeText(context, "Eliminado del Carrito", Toast.LENGTH_SHORT).show();

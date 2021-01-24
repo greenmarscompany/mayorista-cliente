@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,8 +6,9 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="5dp"
+    android:layout_marginBottom="20dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -17,12 +17,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/stroke_card_product"
         android:padding="10dp">
 
         <ImageView
             android:id="@+id/ProductImage"
             android:layout_width="140dp"
             android:layout_height="150dp"
+            android:background="#F2F4F9"
+            android:padding="5dp"
+            app:layout_constraintVertical_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,48 +45,47 @@
             android:paddingRight="3dp"
             android:text="TextView"
             android:textColor="@color/marcasTitle"
-            android:textSize="20dp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ProductImage"
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <Button
+        <ImageButton
             android:id="@+id/Ver_Distribuidores"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="32dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/custom_button"
-            android:drawableRight="@drawable/ic_cart"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
-            android:text="Agregar"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/custom_bottom_cart"
+            android:padding="5dp"
+            android:src="@drawable/ic_shopping_cart"
             android:textColor="@color/textTitleButton"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:text="Cantidad"
             android:textColor="@color/marcasTitle"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/ProductCantidad"
-            app:layout_constraintEnd_toStartOf="@+id/Ver_Distribuidores"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/ProductImage" />
+            app:layout_constraintStart_toEndOf="@+id/ProductImage"
+            app:layout_constraintTop_toBottomOf="@+id/Name_product_detail"
+            app:layout_constraintVertical_bias="1.0" />
 
         <EditText
             android:id="@+id/ProductCantidad"
             android:layout_width="72dp"
             android:layout_height="32dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/custom_cantidad"
             android:ems="10"
             android:gravity="center"

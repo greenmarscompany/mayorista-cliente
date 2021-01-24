@@ -8,26 +8,32 @@
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="8dp"
-    app:cardCornerRadius="5dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:padding="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/stroke_card_product"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/ProductGasImage"
-            android:layout_width="115dp"
+            android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_marginEnd="3dp"
+            android:background="#F2F4F9"
+            android:padding="5dp"
+            android:layout_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/GasDetailName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+
             app:srcCompat="@drawable/ic_launcher_background" />
 
         <TextView
@@ -42,25 +48,23 @@
             android:paddingRight="3dp"
             android:text="TextView"
             android:textColor="@color/marcasTitle"
-            android:textSize="14dp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ProductGasImage"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ImageButton
             android:id="@+id/Button_45_Kilos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="32dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="2dp"
-            android:background="@drawable/custom_button"
-            android:drawableRight="@drawable/ic_cart"
-            android:paddingLeft="3dp"
-
-            android:paddingRight="3dp"
-            android:text="Agregar"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/custom_bottom_cart"
+            android:padding="5dp"
+            android:src="@drawable/ic_shopping_cart"
             android:textColor="@color/textTitleButton"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -137,14 +141,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="5dp"
             android:text="Cantidad:"
             android:textColor="@color/marcasTitle"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/ProductGasCantidad"
-            app:layout_constraintEnd_toStartOf="@+id/Button_45_Kilos"
-            app:layout_constraintHorizontal_bias="0.034"
-            app:layout_constraintStart_toEndOf="@+id/ProductGasImage" />
+            app:layout_constraintStart_toEndOf="@+id/ProductGasImage"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
         <EditText
             android:id="@+id/ProductGasCantidad"
@@ -159,8 +163,6 @@
             android:textColor="@color/marcasTitle"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/Button_45_Kilos"
-            app:layout_constraintHorizontal_bias="0.068"
             app:layout_constraintStart_toEndOf="@+id/ProductGasImage" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

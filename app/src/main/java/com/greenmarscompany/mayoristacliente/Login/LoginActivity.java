@@ -121,7 +121,6 @@ public class LoginActivity extends AppCompatActivity {
 
                             int id_user = subscriptionMetaData.asInt();
 
-
                             if (cuenta != null) {
                                 cuenta.setToken(token);
                                 DatabaseClient.getInstance(getApplicationContext())
@@ -270,7 +269,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void saveTokenBackend(final int id, final String tokenClient) {
         FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener( task -> {
+                .addOnCompleteListener(task -> {
 
                 });
         FirebaseInstanceId.getInstance().getInstanceId()

@@ -1,5 +1,6 @@
 package com.greenmarscompany.mayoristacliente;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.greenmarscompany.mayoristacliente.persistence.DatabaseClient;
@@ -71,24 +73,18 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.vi
             }
         });
 
-        holder.cartDeleteButton.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                ECart eCart = cartDetails.get(position);
-                if (eCart.getUid().equals(cartDetails.get(position).getUid())) {
-                    DatabaseClient.getInstance(context)
-                            .getAppDatabase()
-                            .getCartDao()
-                            .deleteCart(eCart);
+        holder.cartDeleteButton.setOnClickListener(v -> {
+            ECart eCart = cartDetails.get(position);
+            if (eCart.getUid().equals(cartDetails.get(position).getUid())) {
+                DatabaseClient.getInstance(context)
+                        .getAppDatabase()
+                        .getCartDao()
+                        .deleteCart(eCart);
 
-                    cartDetails.remove(holder.getAdapterPosition());
-                    notifyItemRemoved(holder.getAdapterPosition());
-                    notifyDataSetChanged();
+                cartDetails.remove(holder.getAdapterPosition());
+                notifyItemRemoved(holder.getAdapterPosition());
+                notifyDataSetChanged();
 
-                }
-
-
-                //eventListener.calcularTotal(calcularTotal());
             }
         });
 

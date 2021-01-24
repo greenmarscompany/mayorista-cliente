@@ -1,11 +1,16 @@
 package com.greenmarscompany.mayoristacliente;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,12 +23,14 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.greenmarscompany.mayoristacliente.persistence.DatabaseClient;
 import com.greenmarscompany.mayoristacliente.persistence.entity.ECart;
 import com.greenmarscompany.mayoristacliente.pojo.Product;
-import com.greenmarscompany.mayoristacliente.utils.CartChangeColor;
 
 import java.util.ArrayList;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHolder> implements android.view.View.OnClickListener {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHolder> implements
+        android.view.View.OnClickListener {
 
+    private final String COLOR_ACTIVADO = "#1E82D9";
+    private final String COLOR_DESACTIVADO = "#D5E5FF";
 
     ArrayList<Product> products;
     private Context context;
@@ -78,7 +85,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
     class viewHolder extends RecyclerView.ViewHolder {
         android.widget.TextView productTilte, productDescription, add_badge;
         ImageView productImage;
-        Button productButtonAdd;
+        ImageButton productButtonAdd;
         EditText productCantidad;
         android.view.View view;
 
@@ -115,8 +122,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                 }
             }
             if (IsExistsButton) {
-                productButtonAdd.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor("#64dd17")));
-                productButtonAdd.setText("Agregado");
+                productButtonAdd.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
+                productButtonAdd.setImageResource(R.drawable.ic_cart_card);
             }
             productButtonAdd.setOnClickListener(new android.view.View.OnClickListener() {
 
@@ -164,15 +171,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                                     .getAppDatabase()
                                     .getCartDao()
                                     .addCart(eCart);
-                            productButtonAdd.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor("#64dd17")));
-                            productButtonAdd.setText("Agregado");
-                            CartChangeColor.flo_cart.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor("#64dd17")));
-                            CartChangeColor.badge_count_cart.setVisibility(android.view.View.VISIBLE);
-                            CartChangeColor.badge_count_cart.setText(DatabaseClient.getInstance(context)
-                                    .getAppDatabase()
-                                    .getCartDao()
-                                    .getCarts().size() + "");
-                            //    Toast.makeText(context, "Agregado al Carrito", Toast.LENGTH_SHORT).show();
+
+                            productButtonAdd.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
+                            productButtonAdd.setImageResource(R.drawable.ic_cart_card);
+                            ((Activity) context).invalidateOptionsMenu();
                         } else {
                             Toast.makeText(context, "Ingrese una cantidad mayor a 0", Toast.LENGTH_LONG).show();
                         }
@@ -182,20 +184,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                                 .getAppDatabase()
                                 .getCartDao()
                                 .deleteCart(oECart);
-                        if (DatabaseClient.getInstance(context)
-                                .getAppDatabase()
-                                .getCartDao()
-                                .getCarts().size() == 0) {
-                            CartChangeColor.flo_cart.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor(frii_Background)));
-                            CartChangeColor.badge_count_cart.setVisibility(android.view.View.INVISIBLE);
-                        }
-                        CartChangeColor.badge_count_cart.setText(DatabaseClient.getInstance(context)
-                                .getAppDatabase()
-                                .getCartDao()
-                                .getCarts().size() + "");
-                        productButtonAdd.setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.parseColor(frii_Background)));
-                        productButtonAdd.setText("Agregar");
-                        // Toast.makeText(context, "Eliminado del Carrito", Toast.LENGTH_SHORT).show();
+
+                        productButtonAdd.getBackground().setColorFilter(Color.parseColor(COLOR_DESACTIVADO), PorterDuff.Mode.SRC_ATOP);
+                        productButtonAdd.setImageResource(R.drawable.ic_shopping_cart);
                     }
                 }
             });

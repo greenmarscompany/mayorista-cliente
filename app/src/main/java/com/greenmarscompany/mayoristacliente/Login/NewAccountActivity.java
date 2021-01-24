@@ -15,9 +15,18 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.auth0.android.jwt.Claim;
+import com.auth0.android.jwt.JWT;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.greenmarscompany.mayoristacliente.Global;
+import com.greenmarscompany.mayoristacliente.MainActivity;
 import com.greenmarscompany.mayoristacliente.R;
 import com.greenmarscompany.mayoristacliente.persistence.DatabaseClient;
+import com.greenmarscompany.mayoristacliente.persistence.Session;
 import com.greenmarscompany.mayoristacliente.persistence.entity.Acount;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -25,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 public class NewAccountActivity extends AppCompatActivity {
 
@@ -52,7 +62,7 @@ public class NewAccountActivity extends AppCompatActivity {
         terminos_condiciones.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                Intent intent=new Intent(getApplicationContext(),TerminosCondicionesActivity.class);
+                Intent intent = new Intent(getApplicationContext(), TerminosCondicionesActivity.class);
                 startActivity(intent);
             }
         });
@@ -100,66 +110,189 @@ public class NewAccountActivity extends AppCompatActivity {
         }
 
         JsonObjectRequest jsonObjectRequest =
-                new JsonObjectRequest(Request.Method.POST, url, object, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+                new JsonObjectRequest(Request.Method.POST, url, object, response -> {
+                    try {
+
+                        System.out.println(response);
+                        int id = response.getJSONObject("data").getInt("company_id");
+
+                        if (id != 0) {
+                            Acount cuenta = new Acount();
+
+                            cuenta.setId(id);
+                            cuenta.setNombre(nombre);
+                            cuenta.setNumDocumento(num_documento);
+                            cuenta.setEmail(email);
+                            cuenta.setPhoneOne(telefono);
+                            cuenta.setPhoneTwo(null);
+                            cuenta.setDireccion(direccion);
+                            cuenta.setPassword(pass);
+
+                            DatabaseClient.getInstance(getApplicationContext())
+                                    .getAppDatabase()
+                                    .getAcountDao()
+                                    .addUser(cuenta);
+
+                            iniciarSesion(email, pass);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }, error -> {
+                    android.util.Log.d("Volley post", "error voley" + error.toString());
+                    NetworkResponse response = error.networkResponse;
+                    if (error instanceof ServerError && response != null) {
                         try {
+                            String res = new String(response.data,
+                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                            // Now you can use any deserializer to make sense of data
+                            JSONObject jsonObject = new JSONObject(res);
+                            String message = jsonObject.getString("message");
+                            System.out.println(res);
 
-                            System.out.println(response);
-                            int id = response.getJSONObject("data").getInt("company_id");
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                        } catch (UnsupportedEncodingException | JSONException e1) {
+                            // Couldn't properly decode data to string
+                            Toast.makeText(getApplicationContext(), "Error en operacion", Toast.LENGTH_SHORT).show();
+                            e1.printStackTrace();
+                        }
+                    }
+                });
 
-                            if (id != 0) {
-                                Acount cuenta = new Acount();
+        requestQueue.add(jsonObjectRequest);
+    }
 
-                                cuenta.setId(id);
-                                cuenta.setNombre(nombre);
-                                cuenta.setNumDocumento(num_documento);
-                                cuenta.setEmail(email);
-                                cuenta.setPhoneOne(telefono);
-                                cuenta.setPhoneTwo(null);
-                                cuenta.setDireccion(direccion);
-                                cuenta.setPassword(pass);
+    public void iniciarSesion(String user, String pass) {
 
+        final Session session = new Session(getApplicationContext());
+        int token_app = session.getToken();
+
+        // Si es que existe el usuario en la DB - pasar al main activity
+        // si no insertar el usuario  -> si es que el TOKEN es valido
+        Acount cuenta = DatabaseClient.getInstance(getApplicationContext())
+                .getAppDatabase()
+                .getAcountDao()
+                .login(user, pass);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        JSONObject object = new JSONObject();
+        try {
+            object.put("username", user);
+            object.put("password", pass);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Metodo de login si es que existe conexion a INTERNET
+        String url = this.baseUrl + "/api/auth/obtain_token/";
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.POST, url, object, response -> {
+                    try {
+                        String token = response.getString("token");
+                        if (!token.equals("")) {
+
+                            JWT parsedJWT = new JWT(token);
+                            Claim subscriptionMetaData = parsedJWT.getClaim("user_id");
+
+                            int id_user = subscriptionMetaData.asInt();
+
+                            if (cuenta != null) {
+                                cuenta.setToken(token);
                                 DatabaseClient.getInstance(getApplicationContext())
                                         .getAppDatabase()
                                         .getAcountDao()
-                                        .addUser(cuenta);
+                                        .updateUser(cuenta);
 
-                                Toast.makeText(getApplicationContext(), "Gracias por registrate, Ya puede Iniciar sesión", Toast.LENGTH_LONG).show();
-
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
-
+                                session.setToken(cuenta.getId());
+                                saveTokenBackend(id_user, token);
                             }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }, error -> {
+                    android.util.Log.d("Volley post", "error voley" + error.toString());
+                    NetworkResponse response = error.networkResponse;
+                    if (error instanceof ServerError && response != null) {
+                        try {
+                            String res = new String(response.data,
+                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                            JSONObject obj = new JSONObject(res);
+                            System.out.println(obj.toString());
+                        } catch (UnsupportedEncodingException | JSONException e1) {
+                            e1.printStackTrace();
                         }
                     }
-                }, new Response.ErrorListener() {
+
+                }) {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
+                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                        return super.parseNetworkResponse(response);
+                    }
+                };
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void saveTokenBackend(final int id, final String tokenClient) {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+
+                });
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        android.util.Log.w("Friibusiness", "getInstanceId failed", task.getException());
+                        return;
+                    }
+
+                    String token = task.getResult().getToken();
+
+                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                    JSONObject object = new JSONObject();
+                    try {
+                        object.put("token", token);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    String url = Global.URL_HOST + "/device/save/";
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                            response -> {
+                                try {
+                                    int status = response.getInt("status");
+                                    if (status == 200) {
+                                        System.out.println("Mensaje: " + response.getString("message"));
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }, error -> {
                         android.util.Log.d("Volley post", "error voley" + error.toString());
                         NetworkResponse response = error.networkResponse;
                         if (error instanceof ServerError && response != null) {
                             try {
                                 String res = new String(response.data,
                                         HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                                // Now you can use any deserializer to make sense of data
-                                JSONObject jsonObject = new JSONObject(res);
-                                String message = jsonObject.getString("message");
+                                JSONObject obj = new JSONObject(res);
                                 System.out.println(res);
-
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                             } catch (UnsupportedEncodingException | JSONException e1) {
-                                // Couldn't properly decode data to string
-                                Toast.makeText(getApplicationContext(), "Error en operacion", Toast.LENGTH_SHORT).show();
                                 e1.printStackTrace();
                             }
                         }
-                    }
+                    }) {
+                        @Override
+                        public java.util.Map<String, String> getHeaders() {
+                            java.util.Map<String, String> headers = new HashMap<>();
+                            headers.put("Authorization", "JWT " + tokenClient);
+                            headers.put("Content-Type", "application/json");
+                            return headers;
+                        }
+                    };
+                    requestQueue.add(jsonObjectRequest);
                 });
-
-        requestQueue.add(jsonObjectRequest);
     }
 }

@@ -78,14 +78,6 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
             transaction.commit();
 
         }
-        if (Id == R.id.account) {
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.navigationContainer, new AccountFragment());
-            //transaction.addToBackStack(null);
-            transaction.commit();
-        }
-
         CerrarSecion = findViewById(R.id.CerrarSesion);
         CerrarSecion.setOnClickListener(new android.view.View.OnClickListener() {
 
@@ -99,8 +91,6 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
                 finish();
             }
         });
-
-
     }
 
     @Override
@@ -113,12 +103,6 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
             intent = new Intent(getBaseContext(), MainActivity.class);
             startActivity(intent);
         }
-        if (menuItem.getItemId() == R.id.account) {
-            intent = new Intent(getBaseContext(), PerfilActivity.class);
-            intent.putExtra("id", R.id.account);
-            startActivity(intent);
-            Toast.makeText(this, "Account", Toast.LENGTH_SHORT).show();
-        }
         if (menuItem.getItemId() == R.id.Perfil) {
 
             intent = new Intent(getBaseContext(), PerfilActivity.class);
@@ -126,14 +110,6 @@ public class PerfilActivity extends AppCompatActivity implements NavigationView.
             intent.putExtra("name", title);
             intent.putExtra("id", R.id.Perfil);
             startActivity(intent);
-
-            /*
-            transaction.replace(R.id.navigationContainer, new SettingFragment());
-            transaction.addToBackStack(null);
-            transaction.commit();
-            Toast.makeText(this, "Perfil", Toast.LENGTH_SHORT).show();
-
-             */
         }
         if (menuItem.getItemId() == R.id.MisPedidos) {
             intent = new Intent(this, PedidosActivity.class);
