@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:background="@color/frii_Background"
-    tools:context=".Login.NewAccountActivity">
+    tools:context=".login.NewAccountActivity">
 
     <TextView
         android:id="@+id/textView10"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="Crear una cuenta"
+        android:text="@string/title_register"
         android:textColor="@color/white"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -25,9 +25,9 @@
     <ScrollView
         android:id="@+id/scrollView3"
         android:layout_width="407dp"
-        android:padding="20dp"
         android:layout_height="0dp"
         android:layout_marginBottom="15dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

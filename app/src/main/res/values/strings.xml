@@ -45,5 +45,6 @@
     <string name="des_logo_login">Mayorista Cliente</string>
     <string name="pass_olvidaste">¿Olvidaste tu contraseña?</string>
     <string name="btn_login">Ingresar</string>
+    <string name="title_register">Crear nueva cuenta</string>
 
 </resources>

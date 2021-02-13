@@ -16,7 +16,7 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.greenmarscompany.mayoristacliente.Login.LoginActivity;
+import com.greenmarscompany.mayoristacliente.login.LoginActivity;
 import com.greenmarscompany.mayoristacliente.persistence.Session;
 import com.greenmarscompany.mayoristacliente.pojo.Product;
 import com.greenmarscompany.mayoristacliente.utils.VolleySingleton;

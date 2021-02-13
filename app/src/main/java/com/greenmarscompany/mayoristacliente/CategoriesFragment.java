@@ -23,7 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.greenmarscompany.mayoristacliente.Login.LoginActivity;
+import com.greenmarscompany.mayoristacliente.login.LoginActivity;
 import com.greenmarscompany.mayoristacliente.persistence.Session;
 import com.greenmarscompany.mayoristacliente.pojo.Categories;
 import com.greenmarscompany.mayoristacliente.utils.VolleySingleton;

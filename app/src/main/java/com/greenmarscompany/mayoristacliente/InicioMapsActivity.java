@@ -8,10 +8,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.util.Log;
 import android.view.Menu;
@@ -21,13 +19,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.greenmarscompany.mayoristacliente.Login.LoginActivity;
+import com.greenmarscompany.mayoristacliente.login.LoginActivity;
 import com.greenmarscompany.mayoristacliente.persistence.DatabaseClient;
 import com.greenmarscompany.mayoristacliente.persistence.Session;
 import com.greenmarscompany.mayoristacliente.persistence.dao.CartDao;
 import com.greenmarscompany.mayoristacliente.persistence.entity.Acount;
-import com.greenmarscompany.mayoristacliente.persistence.entity.ECart;
-import com.greenmarscompany.mayoristacliente.utils.CartChangeColor;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;

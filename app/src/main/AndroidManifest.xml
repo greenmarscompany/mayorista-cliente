@@ -29,7 +29,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.Login.TerminosCondicionesActivity"
+            android:name="com.greenmarscompany.mayoristacliente.login.TerminosCondicionesActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -44,7 +44,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.Login.LoginActivity"
+            android:name="com.greenmarscompany.mayoristacliente.login.LoginActivity"
             android:theme="@style/SplashThemeOne">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -60,10 +60,10 @@
             android:name="com.greenmarscompany.mayoristacliente.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.Login.NewAccountActivity"
+            android:name="com.greenmarscompany.mayoristacliente.login.NewAccountActivity"
             android:theme="@style/ThemeDefault" />
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.Login.ForgottenPasswordActivity"
+            android:name="com.greenmarscompany.mayoristacliente.login.ForgottenPasswordActivity"
             android:theme="@style/Theme.MaterialComponents.NoActionBar" />
 
         <activity

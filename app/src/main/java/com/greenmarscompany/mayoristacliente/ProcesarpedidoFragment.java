@@ -25,7 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.greenmarscompany.mayoristacliente.Login.LoginActivity;
+import com.greenmarscompany.mayoristacliente.login.LoginActivity;
 import com.greenmarscompany.mayoristacliente.persistence.DatabaseClient;
 import com.greenmarscompany.mayoristacliente.persistence.Session;
 import com.greenmarscompany.mayoristacliente.persistence.entity.Acount;

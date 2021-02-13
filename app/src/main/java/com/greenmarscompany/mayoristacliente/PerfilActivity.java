@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.greenmarscompany.mayoristacliente.Login.LoginActivity;
+import com.greenmarscompany.mayoristacliente.login.LoginActivity;
 import com.greenmarscompany.mayoristacliente.persistence.DatabaseClient;
 import com.greenmarscompany.mayoristacliente.persistence.Session;
 import com.greenmarscompany.mayoristacliente.persistence.entity.Acount;

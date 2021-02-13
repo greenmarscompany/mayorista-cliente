@@ -1,4 +1,4 @@
-package com.greenmarscompany.mayoristacliente.Login;
+package com.greenmarscompany.mayoristacliente.login;
 
 import android.content.Intent;
 import android.view.LayoutInflater;

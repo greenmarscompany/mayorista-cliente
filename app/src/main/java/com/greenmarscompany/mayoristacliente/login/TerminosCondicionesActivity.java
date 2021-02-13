@@ -1,4 +1,4 @@
-package com.greenmarscompany.mayoristacliente.Login;
+package com.greenmarscompany.mayoristacliente.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
