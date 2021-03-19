@@ -8,9 +8,75 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:190874690715:android:cdee30b4ffa9a41635d23e",
+        "android_client_info": {
+          "package_name": "com.greenmars.distribuidor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190874690715-pqloet1k8545hecu1fv5831h6r5u9hi2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.greenmars.distribuidor",
+            "certificate_hash": "ec068df7a2311b61989283e7c6ab4078054402bc"
+          }
+        },
+        {
+          "client_id": "190874690715-5i4p0q3vuhml0gnttroo8cnprbbl35kg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIlkE79QS8w-Fi37eShFNFBXYaBdzJn0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190874690715-5i4p0q3vuhml0gnttroo8cnprbbl35kg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:190874690715:android:0ac6f77e294e2e3635d23e",
         "android_client_info": {
           "package_name": "com.greenmars.mayoristadistribuidor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190874690715-5i4p0q3vuhml0gnttroo8cnprbbl35kg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIlkE79QS8w-Fi37eShFNFBXYaBdzJn0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190874690715-5i4p0q3vuhml0gnttroo8cnprbbl35kg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190874690715:android:2b09f5157347f88b35d23e",
+        "android_client_info": {
+          "package_name": "com.greenmarscompany.cliente"
         }
       },
       "oauth_client": [

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.greenmarscompany.mayoristacliente">
+    package="com.greenmarscompany.cliente">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -25,11 +25,11 @@
         tools:targetApi="m">
 
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.InicioMapsActivity"
+            android:name="com.greenmarscompany.cliente.InicioMapsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.login.TerminosCondicionesActivity"
+            android:name="com.greenmarscompany.cliente.login.TerminosCondicionesActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -44,7 +44,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.login.LoginActivity"
+            android:name="com.greenmarscompany.cliente.login.LoginActivity"
             android:theme="@style/SplashThemeOne">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,35 +53,35 @@
         </activity>
 
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.InicioActivity"
+            android:name="com.greenmarscompany.cliente.InicioActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.MapsActivity"
+            android:name="com.greenmarscompany.cliente.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.login.NewAccountActivity"
+            android:name="com.greenmarscompany.cliente.login.NewAccountActivity"
             android:theme="@style/ThemeDefault" />
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.login.ForgottenPasswordActivity"
+            android:name="com.greenmarscompany.cliente.login.ForgottenPasswordActivity"
             android:theme="@style/Theme.MaterialComponents.NoActionBar" />
 
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.PedidosActivity"
+            android:name="com.greenmarscompany.cliente.PedidosActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.PerfilActivity"
+            android:name="com.greenmarscompany.cliente.PerfilActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.Cart"
+            android:name="com.greenmarscompany.cliente.Cart"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.greenmarscompany.mayoristacliente.MainActivity"
+            android:name="com.greenmarscompany.cliente.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service
-            android:name="com.greenmarscompany.mayoristacliente.FirebaseMessagingService"
+            android:name="com.greenmarscompany.cliente.FirebaseMessagingService"
             android:stopWithTask="false"
             android:exported="false">
             <intent-filter>
