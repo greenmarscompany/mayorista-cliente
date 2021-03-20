@@ -42,12 +42,12 @@ class BrandsFragment : Fragment() {
 
         val session = Session(context)
         val token: Int = session.token
-        if (token == 0 || token < 0) {
+       /* if (token == 0 || token < 0) {
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
             activity?.finish()
             Log.e(Global.TAG, "Crendenciales Invalidas")
-        }
+        }*/
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

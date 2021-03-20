@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //inicializando al fragment que contendra alos fragments categories y brands
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.navigationContainer, new NewMapsFragment());
+        fragmentTransaction.add(R.id.navigationContainer, new MainFragment());
         fragmentTransaction.commit();
     }
 
@@ -229,6 +229,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Session session = new Session(getApplicationContext());
         final int token = session.getToken();
         CartDao cartDao = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().getCartDao();
+
+        View view = navigationView.getHeaderView(0);
+        lblUsername = view.findViewById(R.id.lblNombreUsuario);
+        lblEmail = view.findViewById(R.id.lblEmailUsuario);
+
         if (token != 0) {
             Acount acount = DatabaseClient.getInstance(getApplicationContext())
                     .getAppDatabase()
@@ -236,28 +241,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .getUser(token);
 
             if (acount != null) {
-                android.view.View view = navigationView.getHeaderView(0);
-                lblUsername = view.findViewById(R.id.lblNombreUsuario);
-                lblEmail = view.findViewById(R.id.lblEmailUsuario);
-
                 lblUsername.setText(acount.getNombre());
                 lblEmail.setText(acount.getEmail());
-
                 //-- Llenamos el carrito de compras
                 mCartItemCount = cartDao.getCountCart();
-
             } else {
-                Toast.makeText(getApplicationContext(), "Error de  loggeado", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
+                lblUsername.setText("Mayorista");
+                lblEmail.setText("team@greenmarscompany.com");
             }
-
         } else {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-            finish();
-            Log.e(Global.TAG, "llenarInfoUsuario: Las credenciales son invalidas");
+            lblUsername.setText("Mayorista");
+            lblEmail.setText("team@greenmarscompany.com");
         }
 
     }

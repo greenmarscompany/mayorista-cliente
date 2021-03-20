@@ -80,12 +80,12 @@ public class CategoriesFragment extends androidx.fragment.app.Fragment {
         //Validar informacion del usuario
         Session session = new Session(getContext());
         final int token = session.getToken();
-        if (token == 0 || token < 0) {
+        /*if (token == 0 || token < 0) {
             Intent intent = new Intent(getContext(), LoginActivity.class);
             startActivity(intent);
             Objects.requireNonNull(getActivity()).finish();
             System.out.println("LAS CREDENCIALES SON INVALIDAS");
-        }
+        }*/
         //--
 
     }

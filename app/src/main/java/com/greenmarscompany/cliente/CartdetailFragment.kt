@@ -55,13 +55,6 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         //-- Validar información del usuario
         val session = Session(context)
         val token = session.token
-        if (token == 0 || token < 0) {
-            val intent = Intent(context, LoginActivity::class.java)
-            startActivity(intent)
-            Objects.requireNonNull(activity)!!.finish()
-            println("LAS CREDENCIALES SON INVALIDAS")
-        }
-        //--
         initSocket()
     }
 
