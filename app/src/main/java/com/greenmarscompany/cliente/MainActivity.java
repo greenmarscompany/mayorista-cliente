@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 
 import com.greenmarscompany.cliente.login.LoginActivity;
+import com.greenmarscompany.cliente.login.NewAccountActivity;
 import com.greenmarscompany.cliente.persistence.DatabaseClient;
 import com.greenmarscompany.cliente.persistence.Session;
 import com.greenmarscompany.cliente.persistence.dao.CartDao;
@@ -51,29 +53,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ProductDetailFragment.OnFragmentInteractionListener,
         NewMapsFragment.OnFragmentInteractionListener {
 
-
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     androidx.appcompat.widget.Toolbar toolbar;
     NavigationView navigationView;
 
-
-    com.google.android.material.floatingactionbutton.FloatingActionButton flo_cart;
-    com.google.android.material.floatingactionbutton.FloatingActionButton flo_order_pedido;
-
-    Button next_pedidos;
-
     //--
-    android.widget.TextView lblUsername, lblEmail, CerrarSecion, ProbandoID;
-    int id = 3;
-
-    private android.widget.TextView badge_count;
-
-    Boolean inicio = true;
-
+    android.widget.TextView lblUsername, lblEmail, CerrarSecion;
     TextView textCartItemCount;
     int mCartItemCount = 0;
-
+    private int token = 0;
 
     //e
     @Override
@@ -81,11 +70,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Session session = new Session(getApplicationContext());
+        token = session.getToken();
 
         toolbar = findViewById(R.id.navigationToolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.navigationDrawer);
         navigationView = findViewById(R.id.navigationView);
+        Menu menu = navigationView.getMenu();
+
 
         // establecer el evento onclick de navigation
         navigationView.setNavigationItemSelectedListener(this);
@@ -98,22 +91,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         cargarFragments();
         llenarInfoUsuario();
 
-        next_pedidos = findViewById(R.id.siquiente_pedidos);
-        next_pedidos.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                Intent intent = new Intent(getBaseContext(), InicioMapsActivity.class);
-                startActivity(intent);
-                System.out.println("saliendo de");
-            }
-        });
+        CerrarSecion = findViewById(R.id.CerrarSesion);
+        // next_pedidos = findViewById(R.id.siquiente_pedidos);
+
+        updateToken();
+
+        if (token == 0 || token < 0) {
+            menu.findItem(R.id.Perfil).setVisible(false);
+            menu.findItem(R.id.MisPedidos).setVisible(false);
+        }
 
         //-- Cierra la sesión
-        CerrarSecion = findViewById(R.id.CerrarSesion);
-        CerrarSecion.setOnClickListener(v -> {
-            Session session = new Session(getApplicationContext());
-            session.destroySession();
 
+        CerrarSecion.setOnClickListener(v -> {
+            session.destroySession();
             DatabaseClient.getInstance(getApplicationContext())
                     .getAppDatabase()
                     .getCartDao()
@@ -121,17 +112,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
-            finish();
+            finishAffinity();
         });
 
-        updateToken();
+        Log.d(Global.TAG, "onCreate | MainActivity: " + token);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        llenarInfoUsuario();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,32 +125,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         inflater.inflate(R.menu.navigation_actions, menu);
 
         final MenuItem menuItem = menu.findItem(R.id.action_carrito);
-
+        MenuItem itemPedidos = menu.findItem(R.id.action_pedidos);
         View actionView = menuItem.getActionView();
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
         actionView.setOnClickListener(v -> onOptionsItemSelected(menuItem));
         setupBadge();
+
+        if (token == 0 || token < 0) {
+            itemPedidos.setVisible(false);
+        }
+
 
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        Intent intent;
+
         if (item.getItemId() == R.id.action_pedidos) {
-            Intent intent = new Intent(getBaseContext(), PedidosActivity.class);
-            startActivity(intent);
+            transaction.replace(R.id.navigationContainer, new MisPedidosFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         } else if (item.getItemId() == R.id.action_carrito) {
-            Intent intent = new Intent(getApplicationContext(), Cart.class);
-            startActivity(intent);
+            if (token == 0 || token < 0) {
+                Toast.makeText(this, "Por favor inicie sesión o registrese", Toast.LENGTH_LONG).show();
+                intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+            } else {
+                intent = new Intent(this, Cart.class);
+                startActivity(intent);
+            }
             return true;
         }
         return true;
-        //return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@androidx.annotation.NonNull MenuItem menuItem) {
+
         drawerLayout.closeDrawer(GravityCompat.START);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -172,14 +176,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(getBaseContext(), MainActivity.class);
             startActivity(intent);
         } else if (menuItem.getItemId() == R.id.Perfil) {
-            Intent intent = new Intent(getBaseContext(), PerfilActivity.class);
-            String title = menuItem.getTitle().toString();
-            intent.putExtra("name", title);
-            intent.putExtra("id", R.id.Perfil);
-            startActivity(intent);
+            transaction.replace(R.id.navigationContainer, new SettingFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (menuItem.getItemId() == R.id.MisPedidos) {
-            Intent intent = new Intent(getBaseContext(), PedidosActivity.class);
-            startActivity(intent);
+            transaction.replace(R.id.navigationContainer, new MisPedidosFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (menuItem.getItemId() == R.id.mVaciarCache) {
             deleteCache(getBaseContext());
             Toast.makeText(getBaseContext(), "Caché vaciadas correctamente", Toast.LENGTH_SHORT).show();
@@ -197,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 
     public void updateToken() {
 
@@ -217,10 +221,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void cargarFragments() {
         FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
-        //inicializando al fragment que contendra alos fragments categories y brands
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.navigationContainer, new MainFragment());
+
+        if (token == 0 || token < 0) {
+            fragmentTransaction.add(R.id.navigationContainer, new MainFragment());
+        } else {
+            fragmentTransaction.add(R.id.navigationContainer, new NewMapsFragment());
+        }
+
+
         fragmentTransaction.commit();
     }
 
@@ -228,11 +238,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void llenarInfoUsuario() {
         Session session = new Session(getApplicationContext());
         final int token = session.getToken();
-        CartDao cartDao = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().getCartDao();
+
 
         View view = navigationView.getHeaderView(0);
         lblUsername = view.findViewById(R.id.lblNombreUsuario);
         lblEmail = view.findViewById(R.id.lblEmailUsuario);
+
 
         if (token != 0) {
             Acount acount = DatabaseClient.getInstance(getApplicationContext())
@@ -243,8 +254,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (acount != null) {
                 lblUsername.setText(acount.getNombre());
                 lblEmail.setText(acount.getEmail());
-                //-- Llenamos el carrito de compras
-                mCartItemCount = cartDao.getCountCart();
             } else {
                 lblUsername.setText("Mayorista");
                 lblEmail.setText("team@greenmarscompany.com");
@@ -254,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             lblEmail.setText("team@greenmarscompany.com");
         }
 
+        updateCartBadge();
     }
 
     //-- Vaciar las caches
@@ -298,6 +308,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
+    }
+
+    public void updateCartBadge() {
+        CartDao cartDao = DatabaseClient.getInstance(getBaseContext()).getAppDatabase().getCartDao();
+        mCartItemCount = cartDao.getCountCart();
     }
 
 

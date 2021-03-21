@@ -29,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
+// TODO NO ESTA EN USO
 public class GasProductAdapterNew extends RecyclerView.Adapter<GasProductAdapterNew.viewHolder> implements android.view.View.OnClickListener {
 
 

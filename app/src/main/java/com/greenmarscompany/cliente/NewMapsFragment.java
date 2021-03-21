@@ -11,9 +11,13 @@ import android.net.Uri;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -109,8 +113,8 @@ public class NewMapsFragment extends androidx.fragment.app.Fragment implements O
     }
 
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                          android.os.Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             android.os.Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final android.view.View view = inflater.inflate(R.layout.fragment_new_maps, container, false);
         lblDireccion = view.findViewById(R.id.lblDireccion);
@@ -122,26 +126,21 @@ public class NewMapsFragment extends androidx.fragment.app.Fragment implements O
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
+        Button btnSiguiente = view.findViewById(R.id.btnSiguienteComprar);
+        btnSiguiente.setOnClickListener(v -> {
+            FragmentManager manager = getFragmentManager();
+            assert manager != null;
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.navigationContainer, new MainFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
         //-- Slider de imagenes
         sliderView = view.findViewById(R.id.imageSlider);
 
         Listar();
 
         return view;
-    }
-
-    void downloadFile(String imageHttpAddress) {
-        java.net.URL imageUrl = null;
-        try {
-            imageUrl = new java.net.URL(imageHttpAddress);
-            HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
-            conn.connect();
-            Bitmap loadedImage = BitmapFactory.decodeStream(conn.getInputStream());
-            // imgvMensajes.setImageBitmap(loadedImage);
-        } catch (IOException e) {
-            Toast.makeText(getContext(), "Error cargando la imagen: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
     }
 
     private void Listar() {
@@ -254,6 +253,7 @@ public class NewMapsFragment extends androidx.fragment.app.Fragment implements O
                 startLng = new LatLng(position.latitude, position.longitude);
                 String direccion = getStringAddress(startLng.latitude, startLng.longitude);
                 int token = new Session(getContext()).getToken();
+                //Todo actualizar
                 Acount acount = DatabaseClient.getInstance(getContext())
                         .getAppDatabase()
                         .getAcountDao()

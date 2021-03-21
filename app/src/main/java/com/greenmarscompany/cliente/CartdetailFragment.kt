@@ -55,7 +55,7 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         //-- Validar información del usuario
         val session = Session(context)
         val token = session.token
-        initSocket()
+        // initSocket()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

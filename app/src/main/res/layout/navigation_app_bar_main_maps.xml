@@ -9,7 +9,7 @@
 
     <include layout="@layout/navigation_content_main" />
 
-    <Button
+    <!--<Button
         android:id="@+id/siquiente_pedidos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,6 +21,6 @@
         android:drawableEnd="@drawable/ic_right_bold"
         android:text="@string/goto_shopping"
         android:textColor="@color/white"
-        app:backgroundTint="@color/fondoitems" />
+        app:backgroundTint="@color/fondoitems" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

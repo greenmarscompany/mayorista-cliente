@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.greenmarscompany.cliente.persistence.DatabaseClient;
+import com.greenmarscompany.cliente.persistence.dao.CartDao;
 import com.greenmarscompany.cliente.persistence.entity.ECart;
 import com.greenmarscompany.cliente.pojo.Product;
 import com.greenmarscompany.cliente.pojo.ProductGas;
@@ -35,6 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.viewHolder> implements android.view.View.OnClickListener {
 
@@ -43,7 +45,7 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
     private final String COLOR_ACTIVADO_TEXTO = "#FFFFFF";
     private final String COLOR_DESACTIVADO_TEXTO = "#1469D9";
 
-    private final java.util.List<Product> products;
+    List<Product> products;
     private Context context;
 
 
@@ -80,51 +82,30 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = Global.URL_HOST + "/product/markes/" + product.getMarkeId();
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @SuppressLint("RestrictedApi")
-                    @Override
-                    public void onResponse(String response) {
-
-                        int ProductId = 0;
-                        Gson gson = new Gson();
-                        ArrayList<ProductGas> productDetails = gson.fromJson(response,
-                                new TypeToken<ArrayList<ProductGas>>() {
-                                }.getType());
-                        for (ProductGas item : productDetails) {
-                            if (item.getDetail_measurement_id().getName().split(" ")[1].equals(product.getType().split("-")[1]) &&
-                                    item.getMeasurement() == Float.parseFloat(peso)) {
-                                ProductId = item.getId();
-                                break;
-                            }
-                        }
-                        boolean IsExistsButton = false;
-                        for (ECart item : DatabaseClient.getInstance(context)
-                                .getAppDatabase()
-                                .getCartDao()
-                                .getCarts()) {
-                            if (item.getProductRegister() == ProductId) {
-                                IsExistsButton = true;
-                                break;
-                            }
-                        }
-                        String frii_Background = String.format("#%06x", ContextCompat.getColor(context, R.color.frii_Background) & 0xffffff);
-
-                        if (IsExistsButton) {
-                            productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                            productGasAddCart.setText("Agregado");
-                            productGasAddCart.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
-                        } else {
-                            productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_DESACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                            productGasAddCart.setText("Agregar");
-                            productGasAddCart.setTextColor(Color.parseColor(COLOR_DESACTIVADO_TEXTO));
+                response -> {
+                    int ProductId = 0;
+                    Gson gson = new Gson();
+                    ArrayList<ProductGas> productDetails = gson.fromJson(response,
+                            new TypeToken<ArrayList<ProductGas>>() {
+                            }.getType());
+                    for (ProductGas item : productDetails) {
+                        if (item.getDetail_measurement_id().getName().split(" ")[1].equals(product.getType().split("-")[1]) &&
+                                item.getMeasurement() == Float.parseFloat(peso)) {
+                            ProductId = item.getId();
+                            break;
                         }
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "That didn't work!", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+                    if (existeCart(ProductId) != null) {
+                        productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
+                        productGasAddCart.setText("Agregado");
+                        productGasAddCart.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
+                    } else {
+                        productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_DESACTIVADO), PorterDuff.Mode.SRC_ATOP);
+                        productGasAddCart.setText("Agregar");
+                        productGasAddCart.setTextColor(Color.parseColor(COLOR_DESACTIVADO_TEXTO));
+                    }
+                }, error -> Toast.makeText(context, "That didn't work!", Toast.LENGTH_SHORT).show());
         queue.add(stringRequest);
     }
 
@@ -156,36 +137,65 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
                     .into(gasProductImage);
 
             RequestQueue queue = Volley.newRequestQueue(context);
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    switch (checkedId) {
-                        case R.id.gas5kl:
-                            peso = itemView.findViewById(R.id.gas5kl);
-                            setChangeRadioButton(product, peso.getText().toString(), productGasAddCart);
-                            break;
-                        case R.id.gas10kl:
-                            peso = itemView.findViewById(R.id.gas10kl);
-                            setChangeRadioButton(product, peso.getText().toString(), productGasAddCart);
-                            break;
-                        case R.id.gas15kl:
-                            peso = itemView.findViewById(R.id.gas15kl);
-                            setChangeRadioButton(product, peso.getText().toString(), productGasAddCart);
-                            break;
+            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+                switch (checkedId) {
+                    case R.id.gas5kl:
+                        peso = itemView.findViewById(R.id.gas5kl);
+                        setChangeRadioButton(product, peso.getText().toString(), productGasAddCart);
+                        break;
+                    case R.id.gas10kl:
+                        peso = itemView.findViewById(R.id.gas10kl);
+                        setChangeRadioButton(product, peso.getText().toString(), productGasAddCart);
+                        break;
+                    case R.id.gas15kl:
+                        peso = itemView.findViewById(R.id.gas15kl);
+                        setChangeRadioButton(product, peso.getText().toString(), productGasAddCart);
+                        break;
 
-                        case R.id.gas45kl:
-                            peso = itemView.findViewById(R.id.gas45kl);
-                            setChangeRadioButton(product, peso.getText().toString(), productGasAddCart);
-                            break;
-                    }
+                    case R.id.gas45kl:
+                        peso = itemView.findViewById(R.id.gas45kl);
+                        setChangeRadioButton(product, peso.getText().toString(), productGasAddCart);
+                        break;
                 }
             });
             StringBuilder sb = new StringBuilder();
             sb.append(Global.URL_HOST + "/product/markes/" + product.getMarkeId());
             String url = sb.toString();
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+                    response -> {
+                        int ProductId = 0;
+                        Gson gson = new Gson();
+                        ArrayList<ProductGas> productDetails = gson.fromJson(response,
+                                new TypeToken<ArrayList<ProductGas>>() {
+                                }.getType());
+                        for (ProductGas item : productDetails) {
+                            if (item.getDetail_measurement_id().getName().split(" ")[1].equals(product.getType().split("-")[1]) &&
+                                    item.getMeasurement() == Float.parseFloat(peso.getText().toString())) {
+                                ProductId = item.getId();
+                                break;
+                            }
+                        }
+
+                        if (existeCart(ProductId) != null) {
+                            productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
+                            productGasAddCart.setText("Agregado");
+                            productGasAddCart.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
+                        } else {
+                            productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_DESACTIVADO), PorterDuff.Mode.SRC_ATOP);
+                            productGasAddCart.setText("Agregar");
+                            productGasAddCart.setTextColor(Color.parseColor(COLOR_DESACTIVADO_TEXTO));
+                        }
+                    }, error -> Toast.makeText(context, "That didn't work!", Toast.LENGTH_SHORT).show());
+            queue.add(stringRequest);
+
+            CartDao cartDao = DatabaseClient.getInstance(context).getAppDatabase().getCartDao();
+            productGasAddCart.setOnClickListener(v -> {
+                RequestQueue queue1 = Volley.newRequestQueue(context);
+                StringBuilder sb1 = new StringBuilder();
+                sb1.append(Global.URL_HOST + "/product/markes/" + product.getMarkeId());
+                String url1 = sb1.toString();
+                final StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url1,
+                        response -> {
                             int ProductId = 0;
                             Gson gson = new Gson();
                             ArrayList<ProductGas> productDetails = gson.fromJson(response,
@@ -198,121 +208,52 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
                                     break;
                                 }
                             }
-                            boolean IsExistsButton = false;
-                            for (ECart item : DatabaseClient.getInstance(context)
-                                    .getAppDatabase()
-                                    .getCartDao()
-                                    .getCarts()) {
-                                if (item.getProductRegister() == ProductId) {
-                                    IsExistsButton = true;
-                                    break;
-                                }
-                            }
-                            if (IsExistsButton) {
-                                productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                                productGasAddCart.setText("Agregado");
-                                productGasAddCart.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, "That didn't work!", Toast.LENGTH_SHORT).show();
-                }
-            });
-            queue.add(stringRequest);
 
-            productGasAddCart.setOnClickListener(new android.view.View.OnClickListener() {
-                @Override
-                public void onClick(android.view.View v) {
-                    RequestQueue queue = Volley.newRequestQueue(context);
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(Global.URL_HOST + "/product/markes/" + product.getMarkeId());
-                    String url = sb.toString();
-                    final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                            new Response.Listener<String>() {
-                                @SuppressLint("RestrictedApi")
-                                @Override
-                                public void onResponse(String response) {
-                                    int ProductId = 0;
-                                    Gson gson = new Gson();
-                                    ArrayList<ProductGas> productDetails = gson.fromJson(response,
-                                            new TypeToken<ArrayList<ProductGas>>() {
-                                            }.getType());
-                                    for (ProductGas item : productDetails) {
-                                        if (item.getDetail_measurement_id().getName().split(" ")[1].equals(product.getType().split("-")[1]) &&
-                                                item.getMeasurement() == Float.parseFloat(peso.getText().toString())) {
-                                            ProductId = item.getId();
-                                            break;
-                                        }
+                            if (ProductId != 0) {
+                                ECart oECart = existeCart(ProductId);
+                                if (oECart == null) {
+                                    if (productGasCantidad.getText().length() > 0) {
+                                        ECart eCart = new ECart();
+                                        eCart.setName(product.getName() + " " + peso.getText().toString() + " kilos");
+                                        eCart.setPrice(0);
+                                        eCart.setCantidad(Integer.parseInt(productGasCantidad.getText().toString()));
+                                        eCart.setTotal(0);
+                                        // eCart.setTotal(Float.parseFloat(productGasCantidad.getText().toString()) * product.getPrice());
+                                        eCart.setProductRegister(ProductId);
+                                        cartDao.addCart(eCart);
+
+                                        notifyItemChanged(getAdapterPosition());
+                                        ((Activity) context).invalidateOptionsMenu();
+                                        Toast.makeText(context, "Agregado al carrito", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(context, "Ingrese una cantidad mayor a 0", Toast.LENGTH_LONG).show();
                                     }
-                                    ECart oECart = null;
-                                    boolean IsAdd = false;
-                                    for (ECart item : DatabaseClient.getInstance(context)
-                                            .getAppDatabase()
-                                            .getCartDao()
-                                            .getCarts()) {
-                                        if (item.getProductRegister() == ProductId)
-                                            oECart = item;
-                                        if (item.getName().toLowerCase().contains("agua") && item.getName().toLowerCase().contains("gas"))
-                                            IsAdd = false;
-                                        else if (!item.getName().toLowerCase().contains("gas") || item.getName().toLowerCase().contains("cisterna"))
-                                            IsAdd = false;
-                                        else
-                                            IsAdd = true;
-                                    }
-                                    if (DatabaseClient.getInstance(context)
-                                            .getAppDatabase()
-                                            .getCartDao()
-                                            .getCarts().size() == 0)
-                                        IsAdd = true;
-                                    if (ProductId != 0) {
-                                        String frii_Background = String.format("#%06x", ContextCompat.getColor(context, R.color.frii_Background) & 0xffffff);
-                                        if (oECart == null) {
-                                            if (productGasCantidad.getText().length() > 0) {
-                                                ECart eCart = new ECart();
-                                                eCart.setName(product.getName() + " " + peso.getText().toString() + " kilos");
-                                                eCart.setPrice(0);
-                                                eCart.setCantidad(Integer.parseInt(productGasCantidad.getText().toString()));
-                                                eCart.setTotal(0);
-                                                // eCart.setTotal(Float.parseFloat(productGasCantidad.getText().toString()) * product.getPrice());
-                                                eCart.setProductRegister(ProductId);
-                                                DatabaseClient.getInstance(context)
-                                                        .getAppDatabase()
-                                                        .getCartDao()
-                                                        .addCart(eCart);
+                                } else {
+                                    cartDao.deleteCart(oECart);
+                                    notifyItemChanged(getAdapterPosition());
 
-                                                productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_ACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                                                productGasAddCart.setText("Agregado");
-                                                productGasAddCart.setTextColor(Color.parseColor(COLOR_ACTIVADO_TEXTO));
-                                                ((Activity) context).invalidateOptionsMenu();
-                                            } else {
-                                                Toast.makeText(context, "Ingrese una cantidad mayor a 0", Toast.LENGTH_LONG).show();
-                                            }
-                                        } else {
-                                            DatabaseClient.getInstance(context)
-                                                    .getAppDatabase()
-                                                    .getCartDao()
-                                                    .deleteCart(oECart);
-
-                                            ((Activity) context).invalidateOptionsMenu();
-                                            productGasAddCart.getBackground().setColorFilter(Color.parseColor(COLOR_DESACTIVADO), PorterDuff.Mode.SRC_ATOP);
-                                            productGasAddCart.setText("Agregar");
-                                            productGasAddCart.setTextColor(Color.parseColor(COLOR_DESACTIVADO_TEXTO));
-                                        }
-                                    } else
-                                        Toast.makeText(context, "El producto no esta en la base de datos", Toast.LENGTH_SHORT).show();
+                                    ((Activity) context).invalidateOptionsMenu();
                                 }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(context, "That didn't work!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    queue.add(stringRequest);
-                }
+                            } else
+                                Toast.makeText(context, "El producto no esta en la base de datos", Toast.LENGTH_SHORT).show();
+                        }, error -> Toast.makeText(context, "That didn't work!", Toast.LENGTH_SHORT).show());
+                queue1.add(stringRequest1);
             });
         }
+    }
+
+    private ECart existeCart(int id) {
+        ECart eCart = null;
+        for (ECart item : DatabaseClient.getInstance(context)
+                .getAppDatabase()
+                .getCartDao()
+                .getCarts()) {
+            if (item.getProductRegister() == id) {
+                eCart = item;
+                break;
+            }
+        }
+        return eCart;
     }
 
 }

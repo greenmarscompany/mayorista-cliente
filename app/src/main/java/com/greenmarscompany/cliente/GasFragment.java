@@ -5,7 +5,9 @@ import android.net.Uri;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -46,6 +48,7 @@ public class GasFragment extends androidx.fragment.app.Fragment {
 
     //--
     String urlBase = Global.URL_BASE;
+    private boolean isRestart = false;
 
     public GasFragment() {
         // Required empty public constructor
@@ -53,7 +56,7 @@ public class GasFragment extends androidx.fragment.app.Fragment {
 
     public static GasFragment newInstance(String param1, String param2) {
         GasFragment fragment = new GasFragment();
-        android.os.Bundle args = new android.os.Bundle();
+        Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
@@ -61,28 +64,27 @@ public class GasFragment extends androidx.fragment.app.Fragment {
     }
 
     @Override
-    public void onCreate(android.os.Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        //Validar informacion del usuario
-        Session session = new Session(getContext());
-        final int token = session.getToken();
-       /* if (token == 0 || token < 0) {
-            Intent intent = new Intent(getContext(), LoginActivity.class);
-            startActivity(intent);
-            Objects.requireNonNull(getActivity()).finish();
-            System.out.println("LAS CREDENCIALES SON INVALIDAS");
-        }*/
-        //--
     }
 
+    public void onResume() {
+        super.onResume();
+        if (isRestart && products != null) {
+            gasProductAdapter.products = this.products;
+            gasProductAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                          android.os.Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         android.view.View view = inflater.inflate(R.layout.fragment_gas, container, false);
         recyclerView = view.findViewById(R.id.ProductGasContainer);
@@ -98,15 +100,14 @@ public class GasFragment extends androidx.fragment.app.Fragment {
                     : R.layout.list_item_shimmer_alternate;
         });
         recyclerView.showShimmer();
-
-        // llenarDatos();
+        llenarDatos();
         return view;
     }
 
-    public void onResume() {
-        super.onResume();
-        llenarDatos();
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        this.isRestart = true;
     }
 
     public void onButtonPressed(Uri uri) {

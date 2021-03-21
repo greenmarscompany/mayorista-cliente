@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class GasProductDetailAdapter extends RecyclerView.Adapter<GasProductDetailAdapter.viewHolder> implements android.view.View.OnClickListener {
 
 
+    // TODO ELIMINAR NO ESTA EN USO
     private final java.util.List<ProductStaff> products;
     private Context context;
 

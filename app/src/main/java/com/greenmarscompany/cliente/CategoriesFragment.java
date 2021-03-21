@@ -76,18 +76,6 @@ public class CategoriesFragment extends androidx.fragment.app.Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        //Validar informacion del usuario
-        Session session = new Session(getContext());
-        final int token = session.getToken();
-        /*if (token == 0 || token < 0) {
-            Intent intent = new Intent(getContext(), LoginActivity.class);
-            startActivity(intent);
-            Objects.requireNonNull(getActivity()).finish();
-            System.out.println("LAS CREDENCIALES SON INVALIDAS");
-        }*/
-        //--
-
     }
 
     @Override
@@ -138,71 +126,65 @@ public class CategoriesFragment extends androidx.fragment.app.Fragment {
         String url = this.urlBase + "/api/categories";
         JSONArray jsonArray = new JSONArray();
         JsonArrayRequest arrayRequest =
-                new JsonArrayRequest(Request.Method.GET, url, jsonArray, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject object = response.getJSONObject(i);
-                                String imagen_url = urlBase + object.getString("image");
-                                Categories categoria = new Categories(
-                                        object.getInt("id"),
-                                        object.getString("name"),
-                                        imagen_url);
-                                if (!categoria.getName().equals("Gas"))
-                                    categories.add(categoria);
-                                else
-                                    categories.add(0, categoria);
-                            }
-
-                            // Adaptador => para la persistencia de datos
-                            categoriesAdapter = new CategoriesAdapter(categories);
-                            recyclerView.setAdapter(categoriesAdapter);
-
-                            categoriesAdapter.setOnClickListener(new android.view.View.OnClickListener() {
-
-                                BrandsFragment brandsFragment;
-
-                                @Override
-                                public void onClick(android.view.View v) {
-                                    if (getActivity() == null) return;
-
-                                    android.os.Bundle bundle = new android.os.Bundle();
-                                    bundle.putInt("idCategory", categories.get(recyclerView.getChildAdapterPosition(v)).getId());
-
-                                    highlight(v);
-
-                                    FragmentManager manager = getActivity().getSupportFragmentManager();
-                                    FragmentTransaction transaction = manager.beginTransaction();
-                                    brandsFragment = new BrandsFragment();
-                                    brandsFragment.setArguments(bundle);
-                                    String categoriesTitle = categories.get(recyclerView.getChildAdapterPosition(v)).getName();
-                                    Toast.makeText(getContext(), categoriesTitle, Toast.LENGTH_SHORT).show();
-                                    transaction.replace(R.id.mainContainer, brandsFragment);
-                                    transaction.addToBackStack(null);
-                                    transaction.commit();
-                                }
-                            });
-                        } catch (Exception e) {
-                            System.err.println(e.getMessage());
+                new JsonArrayRequest(Request.Method.GET, url, jsonArray, response -> {
+                    try {
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject object = response.getJSONObject(i);
+                            String imagen_url = urlBase + object.getString("image");
+                            Categories categoria = new Categories(
+                                    object.getInt("id"),
+                                    object.getString("name"),
+                                    imagen_url);
+                            if (!categoria.getName().equals("Gas"))
+                                categories.add(categoria);
+                            else
+                                categories.add(0, categoria);
                         }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        android.util.Log.d("Volley get", "error voley" + error.toString());
-                        NetworkResponse response = error.networkResponse;
-                        if (error instanceof ServerError && response != null) {
-                            try {
-                                String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                                JSONObject obj = new JSONObject(res);
-                                android.util.Log.d("Voley post", obj.toString());
-                                String msj = obj.getString("message");
-                                Toast.makeText(getContext(), msj, Toast.LENGTH_SHORT).show();
 
-                            } catch (UnsupportedEncodingException | JSONException e1) {
-                                e1.printStackTrace();
+                        // Adaptador => para la persistencia de datos
+                        categoriesAdapter = new CategoriesAdapter(categories);
+                        recyclerView.setAdapter(categoriesAdapter);
+
+                        categoriesAdapter.setOnClickListener(new android.view.View.OnClickListener() {
+
+                            BrandsFragment brandsFragment;
+
+                            @Override
+                            public void onClick(android.view.View v) {
+                                if (getActivity() == null) return;
+
+                                android.os.Bundle bundle = new android.os.Bundle();
+                                bundle.putInt("idCategory", categories.get(recyclerView.getChildAdapterPosition(v)).getId());
+
+                                highlight(v);
+
+                                FragmentManager manager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction transaction = manager.beginTransaction();
+                                brandsFragment = new BrandsFragment();
+                                brandsFragment.setArguments(bundle);
+                                String categoriesTitle = categories.get(recyclerView.getChildAdapterPosition(v)).getName();
+                                Toast.makeText(getContext(), categoriesTitle, Toast.LENGTH_SHORT).show();
+                                transaction.replace(R.id.mainContainer, brandsFragment);
+                                transaction.addToBackStack(null);
+                                transaction.commit();
                             }
+                        });
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
+                }, error -> {
+                    android.util.Log.d("Volley get", "error voley" + error.toString());
+                    NetworkResponse response = error.networkResponse;
+                    if (error instanceof ServerError && response != null) {
+                        try {
+                            String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                            JSONObject obj = new JSONObject(res);
+                            android.util.Log.d("Voley post", obj.toString());
+                            String msj = obj.getString("message");
+                            Toast.makeText(getContext(), msj, Toast.LENGTH_SHORT).show();
+
+                        } catch (UnsupportedEncodingException | JSONException e1) {
+                            e1.printStackTrace();
                         }
                     }
                 });

@@ -3,19 +3,28 @@ package com.greenmarscompany.cliente;
 import android.content.Intent;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.greenmarscompany.cliente.login.LoginActivity;
 import com.greenmarscompany.cliente.persistence.Session;
 import com.greenmarscompany.cliente.pojo.Product;
@@ -44,6 +53,7 @@ public class ProductsFragment extends androidx.fragment.app.Fragment {
 
     //--
     String urlBase = Global.URL_BASE;
+    private boolean isRestart = false;
 
     public ProductsFragment() {
         // Required empty public constructor
@@ -60,29 +70,32 @@ public class ProductsFragment extends androidx.fragment.app.Fragment {
 
     @Override
     public void onCreate(android.os.Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
 
-        //Validar informacion del usuario
-        Session session = new Session(getContext());
-        final int token = session.getToken();
-        if (token == 0 || token < 0) {
-            Intent intent = new Intent(getContext(), LoginActivity.class);
-            startActivity(intent);
-            Objects.requireNonNull(getActivity()).finish();
-            System.out.println("LAS CREDENCIALES SON INVALIDAS");
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isRestart && products != null) {
+            productAdapter.products = products;
+            productAdapter.notifyDataSetChanged();
         }
-        //--
+
     }
 
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                          android.os.Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         final android.view.View view = inflater.inflate(R.layout.fragment_products, container, false);
+
         recyclerView = view.findViewById(R.id.ProductsContainer);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemViewType((type, position) -> {
@@ -99,20 +112,15 @@ public class ProductsFragment extends androidx.fragment.app.Fragment {
             }
         });
         recyclerView.showShimmer();
+        llenarDatos();
 
         return view;
     }
 
-    public void onResume() {
-        super.onResume();
-        llenarDatos();
-
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onStop() {
+        super.onStop();
+        isRestart = true;
     }
 
     @Override
@@ -123,6 +131,12 @@ public class ProductsFragment extends androidx.fragment.app.Fragment {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
     }
 
     private void llenarDatos() {
@@ -138,54 +152,47 @@ public class ProductsFragment extends androidx.fragment.app.Fragment {
 
         JSONArray jsonArray = new JSONArray();
         JsonArrayRequest arrayRequest =
-                new JsonArrayRequest(Request.Method.GET, url, jsonArray, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            recyclerView.setAdapter(null);
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject object = response.getJSONObject(i);
-                                String imagen_url = urlBase + object.getString("image");
-                                Product product = new Product(
-                                        object.getInt("id"),
-                                        object.getString("description"),
-                                        "Precio U: S/." +
-                                                object.getString("unit_price"),
-                                        Float.parseFloat(object.getString("unit_price")),
-                                        object.getInt("measurement"),
-                                        1,
-                                        imagen_url,
-                                        "",
-                                        object.getJSONObject("marke_id").getString("name"),
-                                        object.getJSONObject("marke_id").getInt("id")
-                                );
+                new JsonArrayRequest(Request.Method.GET, url, jsonArray, response -> {
+                    try {
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject object = response.getJSONObject(i);
+                            String imagen_url = urlBase + object.getString("image");
+                            Product product = new Product(
+                                    object.getInt("id"),
+                                    object.getString("description"),
+                                    "Precio U: S/." +
+                                            object.getString("unit_price"),
+                                    Float.parseFloat(object.getString("unit_price")),
+                                    object.getInt("measurement"),
+                                    1,
+                                    imagen_url,
+                                    "",
+                                    object.getJSONObject("marke_id").getString("name"),
+                                    object.getJSONObject("marke_id").getInt("id")
+                            );
 
-                                products.add(product);
-                            }
-
-                            productAdapter = new ProductAdapter(products);
-                            recyclerView.setAdapter(productAdapter);
-                            recyclerView.hideShimmer();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            products.add(product);
                         }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        android.util.Log.d("Volley get", "error voley" + error.toString());
-                        NetworkResponse response = error.networkResponse;
-                        if (error instanceof ServerError && response != null) {
-                            try {
-                                String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                                JSONObject obj = new JSONObject(res);
-                                android.util.Log.d("Voley post", obj.toString());
-                                String msj = obj.getString("message");
-                                Toast.makeText(getContext(), msj, Toast.LENGTH_SHORT).show();
 
-                            } catch (UnsupportedEncodingException | JSONException e1) {
-                                e1.printStackTrace();
-                            }
+                        productAdapter = new ProductAdapter(getActivity(), products);
+                        recyclerView.setAdapter(productAdapter);
+                        recyclerView.hideShimmer();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }, error -> {
+                    android.util.Log.d("Volley get", "error voley" + error.toString());
+                    NetworkResponse response = error.networkResponse;
+                    if (error instanceof ServerError && response != null) {
+                        try {
+                            String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                            JSONObject obj = new JSONObject(res);
+                            android.util.Log.d("Voley post", obj.toString());
+                            String msj = obj.getString("message");
+                            Toast.makeText(getContext(), msj, Toast.LENGTH_SHORT).show();
+
+                        } catch (UnsupportedEncodingException | JSONException e1) {
+                            e1.printStackTrace();
                         }
                     }
                 });
