@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //--
     android.widget.TextView lblUsername, lblEmail, CerrarSecion;
     TextView textCartItemCount;
-    int mCartItemCount = 0;
+    public static int mCartItemCount = 0;
     private int token = 0;
 
     //e
@@ -134,9 +134,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (token == 0 || token < 0) {
             itemPedidos.setVisible(false);
         }
-
-
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        updateCartBadge();
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -197,9 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
+    public void onFragmentInteraction(Uri uri) {}
 
 
     public void updateToken() {
@@ -263,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             lblEmail.setText("team@greenmarscompany.com");
         }
 
-        updateCartBadge();
+
     }
 
     //-- Vaciar las caches
@@ -314,6 +316,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         CartDao cartDao = DatabaseClient.getInstance(getBaseContext()).getAppDatabase().getCartDao();
         mCartItemCount = cartDao.getCountCart();
     }
-
 
 }

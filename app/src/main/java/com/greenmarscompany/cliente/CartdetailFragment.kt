@@ -1,5 +1,6 @@
 package com.greenmarscompany.cliente
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -23,7 +24,6 @@ import com.greenmarscompany.cliente.login.LoginActivity
 import com.greenmarscompany.cliente.persistence.DatabaseClient
 import com.greenmarscompany.cliente.persistence.Session
 import com.greenmarscompany.cliente.persistence.entity.ECart
-import com.greenmarscompany.cliente.services.SocketService
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -53,10 +53,9 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_cartdetail, container, false)
-
-        val socketService:SocketService = activity as SocketService
-        socket = 
-
+        val socketService: SocketService = activity?.application as SocketService
+        socket = socketService.getMSocket()!!
+        initSocket()
 
         recyclerView = view.findViewById(R.id.CartDetailContainer)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -271,7 +270,7 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
     }
 
     private fun initSocket() {
-        if (context == null) return
+        /*if (context == null) return
         val id_user = Session(context).token
         val cuenta = DatabaseClient.getInstance(context)
                 .appDatabase
@@ -298,7 +297,7 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
             //conect();
         } catch (e: URISyntaxException) {
             Log.d(TAG, "Node connect error")
-        }
+        }*/
         socket.on(Socket.EVENT_CONNECT) { args: Array<Any?>? ->
             Log.d(TAG, "emitiendo new conect")
             val data = JSONObject()
@@ -319,7 +318,7 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
             val date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
             Log.d(TAG, "SERVER connect $date")
         }
-        socket.on(Socket.EVENT_DISCONNECT) { args: Array<Any?>? ->
+        /*socket.on(Socket.EVENT_DISCONNECT) { args: Array<Any?>? ->
             val date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
             Log.d(TAG, "SERVER disconnect $date")
         }
@@ -334,7 +333,13 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         socket.on(Socket.EVENT_RECONNECTING) { args: Array<Any?>? ->
             val my_date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
             Log.d(TAG, "SERVER reconnecting $my_date")
-        }
+        }*/
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: Fragment carrito de compras destruido" )
+        socket.disconnect()
     }
 
 }

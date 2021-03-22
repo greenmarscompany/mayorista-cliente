@@ -128,6 +128,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
             }
 
             productButtonAdd.setOnClickListener(v -> {
+                int count = 0;
                 ECart itemCart = existeCart(product.getId());
                 Log.d(Global.TAG, "bind: " + itemCart);
                 if (itemCart == null) {
@@ -141,14 +142,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.viewHold
                         cartDao.addCart(eCart);
 
                         notifyItemChanged(getAdapterPosition());
+                        MainActivity.mCartItemCount++;
                         ((Activity) context).invalidateOptionsMenu();
                     } else {
                         Toast.makeText(context, "Ingrese una cantidad mayor a 0", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     cartDao.deleteCart(itemCart);
-
                     notifyItemChanged(getAdapterPosition());
+                    MainActivity.mCartItemCount--;
                     ((Activity) context).invalidateOptionsMenu();
                 }
             });
