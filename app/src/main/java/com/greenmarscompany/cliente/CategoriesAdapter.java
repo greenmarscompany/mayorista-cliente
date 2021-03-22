@@ -3,6 +3,7 @@ package com.greenmarscompany.cliente;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,7 +55,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.vi
     }
 
     public static class viewHolder extends RecyclerView.ViewHolder {
-        android.widget.TextView categoriestitle;
+        TextView categoriestitle;
         ImageView categoriesImage;
 
         public viewHolder(@androidx.annotation.NonNull android.view.View itemView) {

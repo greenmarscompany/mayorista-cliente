@@ -23,6 +23,7 @@ import com.greenmarscompany.cliente.login.LoginActivity
 import com.greenmarscompany.cliente.persistence.DatabaseClient
 import com.greenmarscompany.cliente.persistence.Session
 import com.greenmarscompany.cliente.persistence.entity.ECart
+import com.greenmarscompany.cliente.services.SocketService
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -49,17 +50,13 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         private const val TAG: String = "GAS"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //-- Validar información del usuario
-        val session = Session(context)
-        val token = session.token
-        // initSocket()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_cartdetail, container, false)
+
+        val socketService:SocketService = activity as SocketService
+        socket = 
+
 
         recyclerView = view.findViewById(R.id.CartDetailContainer)
         recyclerView.layoutManager = LinearLayoutManager(context)

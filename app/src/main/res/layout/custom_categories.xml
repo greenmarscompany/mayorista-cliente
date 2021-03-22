@@ -28,7 +28,6 @@
             android:background="@drawable/custom_button_highlight_white"
             app:cardCornerRadius="30dp"
             app:cardElevation="0dp">
-
             <ImageView
                 android:id="@+id/CategoriesImage"
                 android:layout_width="60dp"
