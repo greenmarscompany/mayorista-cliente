@@ -7,15 +7,15 @@
     android:layout_marginTop="?attr/actionBarSize"
     tools:context=".CartdetailFragment">
 
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Productos Seleccionados"
-        android:textColor="@color/marcasTitle"
-        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:text="Mi carrito"
+        android:textColor="@color/black"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

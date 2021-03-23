@@ -1,11 +1,13 @@
 package com.greenmarscompany.cliente;
 
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,11 +38,13 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
+
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.viewHolder> implements android.view.View.OnClickListener {
@@ -49,17 +53,13 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
     private Context context;
     private android.view.View.OnClickListener listener;
     ViewGroup viewGroup;
-    private Socket socket;
     private final MisPedidosFragment oMisPedidosFragment;
+    public static final String TAG = Global.TAG;
+    Socket socket;
 
-    public String HOST_NODEJS = Global.URL_NODE;
-
-    public static final String TAG = "firebase";
-    private final static int NOTIFICATION_ID = 0;
-    private final static String CHANNEL_ID = "NOTIFICACION";
-
-    public MisPedidosAdapter(java.util.List<Order> data, MisPedidosFragment oMisPedidosFragment) {
+    public MisPedidosAdapter(List<Order> data, Socket socket, MisPedidosFragment oMisPedidosFragment) {
         this.data = data;
+        this.socket = socket;
         this.oMisPedidosFragment = oMisPedidosFragment;
     }
 
@@ -174,58 +174,49 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
             holder.mensaje.setVisibility(android.view.View.GONE);
             holder.llamar.setVisibility(android.view.View.GONE);
         }
-        holder.btnEliminar.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                final Acount acount = DatabaseClient.getInstance(context)
-                        .getAppDatabase()
-                        .getAcountDao()
-                        .getUser(new Session(context).getToken());
-                JSONObject jsonObject = new JSONObject();
-                RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(context));
-                try {
-                    jsonObject.put("order_id", data.get(position).getId());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String url = Global.URL_HOST + "/order/delete";
-                System.out.println(jsonObject.toString());
-                JsonObjectRequest jsonObjectRequest =
-                        new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                oMisPedidosFragment.llenarPedidos();
-                                Toast.makeText(context, "Se elimino el pedido", Toast.LENGTH_SHORT).show();
 
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                android.util.Log.d("Volley get", "error voley" + error.toString());
-                                NetworkResponse response = error.networkResponse;
-                                if (error instanceof ServerError && response != null) {
-                                    try {
-                                        String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                                        System.out.println(res);
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }) {
-                            @Override
-                            public java.util.Map<String, String> getHeaders() {
-                                java.util.Map<String, String> headers = new HashMap<>();
-                                headers.put("Authorization", "JWT " + acount.getToken());
-                                headers.put("Content-Type", "application/json");
-                                return headers;
-                            }
-                        };
-
-                queue.add(jsonObjectRequest);
+        holder.btnEliminar.setOnClickListener(v -> {
+            final Acount acount = DatabaseClient.getInstance(context)
+                    .getAppDatabase()
+                    .getAcountDao()
+                    .getUser(new Session(context).getToken());
+            JSONObject jsonObject = new JSONObject();
+            RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(context));
+            try {
+                jsonObject.put("order_id", data.get(position).getId());
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            String url = Global.URL_HOST + "/order/delete";
+            JsonObjectRequest jsonObjectRequest =
+                    new JsonObjectRequest(Request.Method.PUT, url, jsonObject, response -> {
+                        notifyItemRemoved(position);
+                        data.remove(position);
+                        Toast.makeText(context, "Se elimino el pedido", Toast.LENGTH_SHORT).show();
+                    }, error -> {
+                        Log.d("Volley get", "error voley" + error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (error instanceof ServerError && response != null) {
+                            try {
+                                String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                Log.d(TAG, "onBindViewHolder: " + res);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }) {
+                        @Override
+                        public java.util.Map<String, String> getHeaders() {
+                            java.util.Map<String, String> headers = new HashMap<>();
+                            headers.put("Authorization", "JWT " + acount.getToken());
+                            headers.put("Content-Type", "application/json");
+                            return headers;
+                        }
+                    };
+
+            queue.add(jsonObjectRequest);
         });
+
         if (data.get(position).getStatus().equals("cancel")) {
             holder.cancelar.setText("Repedir");
             holder.cancelar.setBackgroundResource(R.drawable.custom_button_repedir);
@@ -234,7 +225,7 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
             }
         } else {
             if (data.get(position).getStatus().equals("wait")) {
-                java.sql.Time time = java.sql.Time.valueOf(data.get(position).getTime());
+                Time time = java.sql.Time.valueOf(data.get(position).getTime());
                 String timeNow = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" +
                         Calendar.getInstance().get(Calendar.MINUTE) + ":" +
                         Calendar.getInstance().get(Calendar.SECOND);
@@ -258,62 +249,20 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
 
                         public void onFinish() {
                             holder.timerflag = false;
-
                             tiempoCancelar(data.get(position).getId(), data.get(position).getStatus(), position);
-                            oMisPedidosFragment.llenarPedidos();
-
-
-                            //    notificacionCancelado("Pedido cancelado", "El tiempo expiro");
-                            //      notifyDataSetChanged();
-                            //    notifyItemChanged(position);
+                            notifyItemChanged(position);
                         }
                     };
                 } else {
-                    //   if(!timerAuto.contains("Confirmado) ) {
                     tiempoCancelar(data.get(position).getId(), data.get(position).getStatus(), position);
                     oMisPedidosFragment.llenarPedidos();
-
-//                    notifyDataSetChanged();
-                    //     notifyItemChanged(position);
-                    //    holder.timerflag = false;
                 }
             }
-            holder.cancelar.setOnClickListener(new android.view.View.OnClickListener() {
-                @Override
-                public void onClick(android.view.View v) {
-                    if (holder.cancelar.getText().equals("Cancelar")) {
 
-                        /*mensajeConfirmacion(data.get(position).getId(), data.get(position).getStatus(), position);
-                        notifyDataSetChanged();
-                        notifyItemChanged(position);*/
-
-                        // initSocket();
-                        emitirCancelar(data.get(position).getId());
-
-                        holder.timerflag = false;
-                    } else if (holder.cancelar.getText().equals("Calificar")) {
-                        boolean AgendarPedido = false;
-                        if (data.get(position).getStatus().equals("delivered") && details.toString().contains("gas") || details.toString().contains("cisterna"))
-                            AgendarPedido = true;
-                        AgendarPedido agendarPedido = new AgendarPedido(context, data.get(position).getId(),
-                                data.get(position).getCalification(), AgendarPedido);
-                        agendarPedido.show();
-                    }
-                }
-            });
-        }
-
-
-        holder.cancelar.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-
+            holder.cancelar.setOnClickListener(v -> {
                 if (holder.cancelar.getText().equals("Cancelar")) {
-                    mensajeConfirmacion(data.get(position).getId(), data.get(position).getStatus(), position);
-
-                    notifyDataSetChanged();
+                    emitirCancelar(data.get(position).getId());
                     notifyItemChanged(position);
-
                     holder.timerflag = false;
                 } else if (holder.cancelar.getText().equals("Calificar")) {
                     boolean AgendarPedido = false;
@@ -322,13 +271,39 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
                     AgendarPedido agendarPedido = new AgendarPedido(context, data.get(position).getId(),
                             data.get(position).getCalification(), AgendarPedido);
                     agendarPedido.show();
-                } else if (holder.cancelar.getText().equals("Repedir")) {
-                    //FUNCION( DATA.GET(POSITION).GETID )*/
-                    // initSocket();
-                    emitirReorder(data.get(position).getId());
-                    notifyDataSetChanged();
-                    notifyItemChanged(position);
                 }
+            });
+        }
+
+
+        holder.cancelar.setOnClickListener(v -> {
+
+            if (holder.cancelar.getText().equals("Cancelar")) {
+                mensajeConfirmacion(data.get(position).getId(), data.get(position).getStatus(), position);
+                // notifyDataSetChanged();
+                notifyItemChanged(position);
+
+                holder.timerflag = false;
+            } else if (holder.cancelar.getText().equals("Calificar")) {
+                boolean AgendarPedido = false;
+                if (data.get(position).getStatus().equals("delivered") && details.toString().contains("gas") || details.toString().contains("cisterna"))
+                    AgendarPedido = true;
+                AgendarPedido agendarPedido = new AgendarPedido(context, data.get(position).getId(),
+                        data.get(position).getCalification(), AgendarPedido);
+                agendarPedido.show();
+            } else if (holder.cancelar.getText().equals("Repedir")) {
+                JSONObject datas = new JSONObject();
+                int id_user = new Session(context).getToken();
+                try {
+                    datas.put("id", data.get(position).getId());
+                    datas.put("id_user", id_user);
+                    socket.emit("reorder client", datas);
+                    notifyItemChanged(position);
+                    Log.d(TAG, "emitirReorder: se hizo un repedido");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -364,7 +339,7 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
             llamar = itemView.findViewById(R.id.ButtonLLamarPedido);
             mensaje = itemView.findViewById(R.id.ButtonMensajePedido);
             cancelar = itemView.findViewById(R.id.ButtonCancelarPedido);
-           /* btnRepedir = itemView.findViewById(R.id.buttonRepedir);*/
+            /* btnRepedir = itemView.findViewById(R.id.buttonRepedir);*/
             btnEliminar = itemView.findViewById(R.id.btnEliminar);
             timerAuto = itemView.findViewById(R.id.timerAuto);
             textCancelado = itemView.findViewById(R.id.textCancelado);
@@ -380,8 +355,6 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
                 .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        /*tiempoCancelar(idOrden, status, position);*/
-                        // initSocket();
                         emitirCancelar(idOrden);
                     }
                 })
@@ -409,21 +382,18 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
             RequestQueue queue = Volley.newRequestQueue(context);
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                int status = response.getInt("status");
-                                if (status == 200) {
-                                    Toast.makeText(context, response.getString("message"), Toast.LENGTH_LONG).show();
-                                    /*initSocket();*/
-                                    Order order = data.get(position);
-                                    order.setStatus("cancel");
-                                    data.set(position, order);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    response -> {
+                        try {
+                            int status1 = response.getInt("status");
+                            if (status1 == 200) {
+                                // Toast.makeText(context, response.getString("message"), Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "tiempoCancelar: " + response.getString("message"));
+                                Order order = data.get(position);
+                                order.setStatus("cancel");
+                                data.set(position, order);
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     },
                     new Response.ErrorListener() {
@@ -446,104 +416,35 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
     }
 
     private void initSocket() {
-
-        int id_user = new Session(context).getToken();
-        JSONObject data = new JSONObject();
-        Acount cuenta = DatabaseClient.getInstance(context)
+        socket.connect();
+        final int id_user = new Session(context).getToken();
+        final Acount acount = DatabaseClient.getInstance(context)
                 .getAppDatabase()
                 .getAcountDao()
                 .getUser(id_user);
 
-        final JSONObject json_connect = new JSONObject();
-        IO.Options opts = new IO.Options();
-        // opts.forceNew = true;
-        opts.reconnection = true;
-        opts.query = "auth_token=thisgo77";
+        socket.on(Socket.EVENT_CONNECT, args -> {
+            JSONObject data = new JSONObject();
+            if (context == null) return;
+            try {
+                data.put("ID", acount.getId());
+                data.put("type", "client");
+                Log.d(TAG, "new connect recycler ");
+                socket.emit("new connect", data);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
+
+        JSONObject data = new JSONObject();
         try {
-            json_connect.put("ID", "US01");
-            json_connect.put("TOKEN", cuenta.getToken());
-            json_connect.put("ID_CLIENT", 2);
+            data.put("id", id_user);
+            data.put("token", acount.getToken());
+            Log.d(TAG, "conect " + data.toString());
+            socket.emit("status order", data);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        try {
-            socket = IO.socket(HOST_NODEJS, opts);
-            socket.connect();
-            // SOCKET.io().reconnectionDelay(10000);
-            android.util.Log.d(TAG, "Node connect ok");
-            //conect();
-        } catch (URISyntaxException e) {
-            android.util.Log.d(TAG, "Node connect error");
-        }
-
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                android.util.Log.d(TAG, "emitiendo new conect");
-                JSONObject data = new JSONObject();
-                int id = new Session(context).getToken();
-                Acount cuenta = DatabaseClient.getInstance(context)
-                        .getAppDatabase()
-                        .getAcountDao()
-                        .getUser(id);
-                try {
-                    data.put("ID", cuenta.getId());
-                    data.put("type", "client");
-                    android.util.Log.d(TAG, "conect " + data.toString());
-                    socket.emit("new connect", data);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String date = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-                android.util.Log.d(TAG, "SERVER connect " + date);
-
-
-            }
-        });
-
-        socket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                String date = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-                android.util.Log.d(TAG, "SERVER disconnect " + date);
-            }
-        });
-
-        socket.on(Socket.EVENT_RECONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                String my_date = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-                android.util.Log.d(TAG, "SERVER reconnect " + my_date);
-            }
-        });
-
-        socket.on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                String my_date = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-                android.util.Log.d(TAG, "SERVER timeout " + my_date);
-            }
-        });
-
-        socket.on(Socket.EVENT_RECONNECTING, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                String my_date = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-                android.util.Log.d(TAG, "SERVER reconnecting " + my_date);
-            }
-        });
-
-        JSONObject datas = new JSONObject();
-        try {
-            datas.put("id", id_user);
-            datas.put("token", cuenta.getToken());
-            android.util.Log.d(TAG, "conect " + datas.toString());
-            socket.emit("status order", datas);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
 
     }
 
@@ -560,16 +461,4 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
         }
     }
 
-    private void emitirReorder(int idorden) {
-        JSONObject datas = new JSONObject();
-        int id_user = new Session(context).getToken();
-        try {
-            datas.put("id", idorden);
-            datas.put("id_user", id_user);
-            socket.emit("reorder client", datas);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 }

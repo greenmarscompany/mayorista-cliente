@@ -82,7 +82,7 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.vi
                 cartDetails.remove(holder.getAdapterPosition());
                 notifyItemRemoved(holder.getAdapterPosition());
                 notifyDataSetChanged();
-
+                MainActivity.mCartItemCount--;
             }
         });
 

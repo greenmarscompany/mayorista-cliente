@@ -7,7 +7,6 @@
     android:layout_marginTop="?attr/actionBarSize"
     tools:context=".MisPedidosFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="3dp"
-            android:text="Mis Pedidos"
-            android:textColor="@color/marcasTitle"
+            android:layout_marginTop="10dp"
+            android:text="Listado de mis pedidos"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -29,8 +28,6 @@
             android:id="@+id/MisPedidosContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="60dp" />
-
+            android:layout_margin="10dp" />
     </LinearLayout>
-
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,14 +60,14 @@ public class ProductsFragment extends androidx.fragment.app.Fragment {
         // Required empty public constructor
     }
 
-    public static ProductsFragment newInstance(String param1, String param2) {
+    /*public static ProductsFragment newInstance(String param1, String param2) {
         ProductsFragment fragment = new ProductsFragment();
         android.os.Bundle args = new android.os.Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
+    }*/
 
     @Override
     public void onCreate(android.os.Bundle savedInstanceState) {
@@ -82,9 +83,11 @@ public class ProductsFragment extends androidx.fragment.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(Global.TAG, "onResume: " + isRestart);
         if (isRestart && products != null) {
             productAdapter.products = products;
             productAdapter.notifyDataSetChanged();
+            getActivity().invalidateOptionsMenu();
         }
 
     }
@@ -120,6 +123,13 @@ public class ProductsFragment extends androidx.fragment.app.Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        isRestart = true;
+        Log.d(Global.TAG, "onStop: " + isRestart);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         isRestart = true;
     }
 

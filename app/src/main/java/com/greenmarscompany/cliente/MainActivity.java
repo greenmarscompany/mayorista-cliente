@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finishAffinity();
         });
 
+
         Log.d(Global.TAG, "onCreate | MainActivity: " + token);
     }
 
@@ -163,6 +164,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 intent = new Intent(this, Cart.class);
                 startActivity(intent);
+                /*transaction.replace(R.id.navigationContainer, new CartdetailFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();*/
             }
             return true;
         }
@@ -201,8 +205,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {}
+    protected void onResume() {
+        super.onResume();
+        invalidateOptionsMenu();
+    }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     public void updateToken() {
 
@@ -226,12 +245,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
-        if (token == 0 || token < 0) {
-            fragmentTransaction.add(R.id.navigationContainer, new MainFragment());
-        } else {
-            fragmentTransaction.add(R.id.navigationContainer, new NewMapsFragment());
+
+        if(getIntent().getExtras() != null) {
+            if(getIntent().getStringExtra("fragment").equals("pedidos")) {
+                fragmentTransaction.replace(R.id.navigationContainer, new MisPedidosFragment());
+                fragmentTransaction.commit();
+                return;
+            }
         }
 
+        if (token == 0 || token < 0) {
+            fragmentTransaction.replace(R.id.navigationContainer, new MainFragment());
+        } else {
+            fragmentTransaction.replace(R.id.navigationContainer, new NewMapsFragment());
+        }
 
         fragmentTransaction.commit();
     }
@@ -265,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             lblEmail.setText("team@greenmarscompany.com");
         }
 
+        updateCartBadge();
 
     }
 

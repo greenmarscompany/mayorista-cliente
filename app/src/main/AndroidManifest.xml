@@ -71,8 +71,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="com.greenmarscompany.cliente.Cart"
+
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
+        <!--// android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
         <activity
             android:name="com.greenmarscompany.cliente.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">

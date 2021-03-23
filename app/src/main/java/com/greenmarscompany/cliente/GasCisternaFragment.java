@@ -66,9 +66,10 @@ public class GasCisternaFragment extends Fragment {
         return view;
     }
 
+
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         this.isRestart = true;
     }
 

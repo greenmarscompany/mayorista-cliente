@@ -1,240 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="0dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="3dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@drawable/stroke_card_product"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/DetallePedido"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:id="@+id/linearLayout5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/DetallePedido"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/TitlePedidos"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="2019/12/12 12:00:34"
-                        android:textColor="@color/marcasTitle"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/EstadoPedido"
-                        android:layout_width="wrap_content"
-
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.4"
-                        android:gravity="center"
-                        android:text="Estado Pedido"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/btnEliminar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/red"
-                        android:src="@drawable/ic_close" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/TitlePedidos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:text="2019/12/12 12:00:34"
+                    android:textColor="@color/marcasTitle"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/textCancelado"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="Cancelado Auto: " />
+                <TextView
+                    android:id="@+id/EstadoPedido"
+                    android:layout_width="wrap_content"
 
-                    <TextView
-                        android:id="@+id/timerAuto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="Expiro!!"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:gravity="center"
+                    android:text="Estado Pedido"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btnEliminar"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:backgroundTint="@color/red"
+                    android:src="@drawable/ic_close" />
 
 
             </LinearLayout>
 
-
-            <TableLayout
-                android:id="@+id/DetallePedido"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:shrinkColumns="0"
-                android:stretchColumns="0"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout9"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
-
-                <TableRow>
-
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="3dp"
-                        android:text="Productos"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:padding="3dp"
-                        android:text="Precio U."
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:padding="3dp"
-                        android:text="Sub Total"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" />
-
-                </TableRow>
-
-                <TableRow android:layout_marginBottom="15dp">
-
-                    <TextView
-                        android:id="@+id/txtDetallePedido"
-                        android:text="2 solgas de 5Kl" />
-
-                    <TextView
-                        android:id="@+id/txtPrecioUnitario"
-                        android:text="S/. 0"
-                        android:textAlignment="textEnd" />
-
-                    <TextView
-                        android:id="@+id/txtSubTotal"
-                        android:text="S/. 0"
-                        android:textAlignment="textEnd" />
-                </TableRow>
-            </TableLayout>
-
             <LinearLayout
-                android:id="@+id/linearLayout9"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/DetallePedido">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/textCancelado"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="20dp"
-                    android:textSize="16sp"
-                    android:text="Total a pagar: " />
+                    android:layout_height="match_parent"
+                    android:text="Cancelado Auto: " />
 
                 <TextView
-                    android:id="@+id/lblTotal"
+                    android:id="@+id/timerAuto"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="0.00"
-                    android:textColor="#000"
-                    android:textSize="16sp"
+                    android:layout_height="match_parent"
+                    android:text="Expiro!!"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+
+        </LinearLayout>
+
+
+        <TableLayout
+            android:id="@+id/DetallePedido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:shrinkColumns="0"
+            android:stretchColumns="0"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="Productos"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:padding="3dp"
+                    android:text="Precio U."
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:padding="3dp"
+                    android:text="Sub Total"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginBottom="15dp">
+
+                <TextView
+                    android:id="@+id/txtDetallePedido"
+                    android:text="2 solgas de 5Kl" />
+
+                <TextView
+                    android:id="@+id/txtPrecioUnitario"
+                    android:text="S/. 0"
+                    android:textAlignment="textEnd" />
+
+                <TextView
+                    android:id="@+id/txtSubTotal"
+                    android:text="S/. 0"
+                    android:textAlignment="textEnd" />
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/DetallePedido">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:showDividers="middle"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:text="Total a pagar: "
+                android:textSize="16sp" />
 
-                <Button
-                    android:id="@+id/ButtonLLamarPedido"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/custom_guardar_setting"
-                    android:padding="3dp"
-                    android:text="Llamar"
-                    android:textColor="@color/textTitleButton" />
+            <TextView
+                android:id="@+id/lblTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="0.00"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-                <!--<Button
-                    android:id="@+id/buttonRepedir"
-                    android:layout_width="wrap_content"
-                    android:layout_height="22dp"
-                    android:background="@drawable/custom_guardar_setting"
-                    android:padding="3dp"
-                    android:text="Repedir"
-                    android:textColor="@color/textTitleButton"
-                    android:visibility="gone" />-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
 
-                <Button
-                    android:id="@+id/ButtonMensajePedido"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/custom_guardar_setting"
-                    android:padding="3dp"
-                    android:text="Mensaje"
-                    android:textColor="@color/textTitleButton" />
+            <Button
+                android:id="@+id/ButtonLLamarPedido"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/custom_guardar_setting"
+                android:padding="3dp"
+                android:text="Llamar"
+                android:textColor="@color/textTitleButton" />
 
-                <Button
-                    android:id="@+id/ButtonCancelarPedido"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/custom_button_delete"
-                    android:padding="3dp"
-                    android:text="cancelar"
-                    android:textColor="@color/textTitleButton" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <!--<Button
+                android:id="@+id/buttonRepedir"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:background="@drawable/custom_guardar_setting"
+                android:padding="3dp"
+                android:text="Repedir"
+                android:textColor="@color/textTitleButton"
+                android:visibility="gone" />-->
+
+            <Button
+                android:id="@+id/ButtonMensajePedido"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/custom_guardar_setting"
+                android:padding="3dp"
+                android:text="Mensaje"
+                android:textColor="@color/textTitleButton" />
+
+            <Button
+                android:id="@+id/ButtonCancelarPedido"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/custom_button_delete"
+                android:padding="3dp"
+                android:text="cancelar"
+                android:textColor="@color/textTitleButton" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -223,6 +223,7 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
                                         cartDao.addCart(eCart);
 
                                         notifyItemChanged(getAdapterPosition());
+                                        MainActivity.mCartItemCount++;
                                         ((Activity) context).invalidateOptionsMenu();
                                         Toast.makeText(context, "Agregado al carrito", Toast.LENGTH_LONG).show();
                                     } else {
@@ -231,7 +232,7 @@ public class GasProductAdapter extends RecyclerView.Adapter<GasProductAdapter.vi
                                 } else {
                                     cartDao.deleteCart(oECart);
                                     notifyItemChanged(getAdapterPosition());
-
+                                    MainActivity.mCartItemCount--;
                                     ((Activity) context).invalidateOptionsMenu();
                                 }
                             } else

@@ -110,6 +110,12 @@ public class GasFragment extends androidx.fragment.app.Fragment {
         this.isRestart = true;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        this.isRestart = true;
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

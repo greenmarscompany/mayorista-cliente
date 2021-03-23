@@ -1,9 +1,6 @@
 package com.greenmarscompany.cliente
 
-import android.app.Application
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,24 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.greenmarscompany.cliente.login.LoginActivity
 import com.greenmarscompany.cliente.persistence.DatabaseClient
 import com.greenmarscompany.cliente.persistence.Session
 import com.greenmarscompany.cliente.persistence.entity.ECart
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.net.URISyntaxException
 import java.text.DateFormat
 import java.util.*
 
 class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
 
-    private lateinit var mListener: OnFragmentInteractionListener
     private lateinit var socket: Socket
     private lateinit var recyclerView: RecyclerView
     private lateinit var procesarPedido: Button
@@ -49,7 +42,6 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
     companion object {
         private const val TAG: String = "GAS"
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_cartdetail, container, false)
@@ -121,10 +113,10 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
                 .cartDao
                 .carts!!
         if (eCarts.size == 0) {
-            procesarPedido.setEnabled(false)
+            procesarPedido.isEnabled = false
             procesarPedido.setBackgroundResource(R.drawable.custom_button_gray)
         } else {
-            procesarPedido.setEnabled(true)
+            procesarPedido.isEnabled = true
         }
         procesarPedido.setOnClickListener { confirmarPedido() }
 
@@ -145,7 +137,7 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
-        button.setOnClickListener { v: View? ->
+        button.setOnClickListener {
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 button.visibility = View.GONE
@@ -159,8 +151,6 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
 
     // Confirmar pedido
     private fun confirmarPedido() {
-        Log.d(TAG, "confirmarPedido: click")
-        //Obtener el token del cliente
         val acount = DatabaseClient.getInstance(context)
                 .appDatabase
                 .acountDao
@@ -212,7 +202,9 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
                             .appDatabase
                             .cartDao
                             .deleteAllCart()
-                    val intent = Intent(context, PedidosActivity::class.java)
+
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.putExtra("fragment", "pedidos")
                     startActivity(intent)
                     activity!!.finish()
                 }
@@ -242,24 +234,6 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         queue.add(jsonObjectRequest)
     }
 
-    fun onButtonPressed(uri: Uri?) {
-        mListener.onFragmentInteraction(uri)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mListener = if (context is OnFragmentInteractionListener) {
-            context
-        } else {
-            throw RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener")
-        }
-    }
-
-    interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(uri: Uri?)
-    }
-
     private fun llenarCarrito() {
         cartDetails = DatabaseClient.getInstance(context)
                 .appDatabase
@@ -270,34 +244,6 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
     }
 
     private fun initSocket() {
-        /*if (context == null) return
-        val id_user = Session(context).token
-        val cuenta = DatabaseClient.getInstance(context)
-                .appDatabase
-                .acountDao
-                .getUser(id_user)
-        val json_connect = JSONObject()
-        val opts = IO.Options()
-        // opts.forceNew = true;
-        opts.reconnection = true
-        opts.query = "auth_token=thisgo77"
-        try {
-            json_connect.put("ID", "US01")
-            json_connect.put("TOKEN", cuenta.token)
-            json_connect.put("ID_CLIENT", id_user)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        try {
-            val HOST_NODEJS = Global.URL_NODE
-            socket = IO.socket(HOST_NODEJS, opts)
-            socket.connect()
-            // SOCKET.io().reconnectionDelay(10000);
-            Log.d(TAG, "Node connect ok")
-            //conect();
-        } catch (e: URISyntaxException) {
-            Log.d(TAG, "Node connect error")
-        }*/
         socket.on(Socket.EVENT_CONNECT) { args: Array<Any?>? ->
             Log.d(TAG, "emitiendo new conect")
             val data = JSONObject()
@@ -318,28 +264,12 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
             val date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
             Log.d(TAG, "SERVER connect $date")
         }
-        /*socket.on(Socket.EVENT_DISCONNECT) { args: Array<Any?>? ->
-            val date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
-            Log.d(TAG, "SERVER disconnect $date")
-        }
-        socket.on(Socket.EVENT_RECONNECT) { args: Array<Any?>? ->
-            val my_date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
-            Log.d(TAG, "SERVER reconnect $my_date")
-        }
-        socket.on(Socket.EVENT_CONNECT_TIMEOUT) { args: Array<Any?>? ->
-            val my_date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
-            Log.d(TAG, "SERVER timeout $my_date")
-        }
-        socket.on(Socket.EVENT_RECONNECTING) { args: Array<Any?>? ->
-            val my_date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
-            Log.d(TAG, "SERVER reconnecting $my_date")
-        }*/
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy: Fragment carrito de compras destruido" )
         socket.disconnect()
+        activity?.invalidateOptionsMenu()
     }
 
 }
