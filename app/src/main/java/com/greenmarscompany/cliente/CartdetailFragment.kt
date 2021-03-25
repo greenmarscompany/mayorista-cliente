@@ -10,7 +10,9 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.ServerError
+import com.android.volley.TimeoutError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.github.nkzawa.socketio.client.IO
@@ -212,12 +214,15 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         }, { error ->
             Log.d("Volley get", "error voley$error")
             val response = error.networkResponse
-            if (error is ServerError && response != null) {
-                try {
-                    val res = String(response.data)
-                    Log.d(TAG, "ConfirmarPedido: $res")
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            if (response != null) {
+                when (error) {
+                    is ServerError -> {
+                        val res = String(response.data)
+                        Log.d(TAG, "ConfirmarPedido: $res")
+                    }
+                    is TimeoutError -> {
+                        Toast.makeText(context, "Opsss Timeout", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }) {
@@ -229,6 +234,11 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
                 return headers
             }
         }
+        jsonObjectRequest.retryPolicy = DefaultRetryPolicy(
+                Global.MY_DEFAULT_TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         queue.add(jsonObjectRequest)
     }
 

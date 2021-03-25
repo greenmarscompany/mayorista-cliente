@@ -249,6 +249,9 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
 
                         public void onFinish() {
                             holder.timerflag = false;
+                            if (position < 0) {
+                                return;
+                            }
                             tiempoCancelar(data.get(position).getId(), data.get(position).getStatus(), position);
                             notifyItemChanged(position);
                         }

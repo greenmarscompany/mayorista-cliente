@@ -215,14 +215,24 @@
 
                 <TextView
                     android:id="@+id/terminos_condiciones"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="7dp"
                     android:text="@string/terminos_condiciones"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
+
+
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/pbRegister"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/white"
+                android:max="100" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/CrearCuenta"

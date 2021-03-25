@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +38,7 @@ class NewAccountActivity : AppCompatActivity() {
     private lateinit var txtPass: TextInputEditText
     private lateinit var txtPassRepeat: TextInputEditText
     private lateinit var accountDao: AcountDao
+    private lateinit var pbRegister: ProgressBar
 
     //--
     private var baseUrl = Global.URL_BASE
@@ -56,7 +58,11 @@ class NewAccountActivity : AppCompatActivity() {
         txtDireccion = findViewById(R.id.txtDireccion)
         txtPass = findViewById(R.id.txtPassword)
         txtPassRepeat = findViewById(R.id.txtPasswordRepeat)
+        pbRegister = findViewById(R.id.pbRegister)
         //--
+
+        pbRegister.visibility = View.GONE
+
         // val crearCuenta = findViewById<Button>(R.id.CrearCuenta)
         val terminosAndCondiciones = findViewById<TextView>(R.id.terminos_condiciones)
         terminosAndCondiciones.setOnClickListener {
@@ -83,6 +89,7 @@ class NewAccountActivity : AppCompatActivity() {
     //-- Registra una nueva cuenta e inicia la sesión
     private fun postRegister(nombre: String?, num_documento: String?, email: String?, telefono: String?,
                              direccion: String?, pass: String?) {
+        pbRegister.visibility = View.VISIBLE
         val url = "$baseUrl/api/clients/create/"
         val requestQueue = Volley.newRequestQueue(applicationContext)
         val `object` = JSONObject()
@@ -100,7 +107,6 @@ class NewAccountActivity : AppCompatActivity() {
         }
         val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, `object`, { response ->
             try {
-                println(response)
                 val id = response.getJSONObject("data").getInt("company_id")
                 if (id != 0) {
                     val cuenta = Acount()
@@ -114,6 +120,8 @@ class NewAccountActivity : AppCompatActivity() {
                     cuenta.password = pass
                     accountDao.addUser(cuenta)
                     iniciarSesion(email, pass)
+
+                    pbRegister.visibility = View.GONE
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -127,12 +135,13 @@ class NewAccountActivity : AppCompatActivity() {
                     val jsonObject = JSONObject(res)
                     val message = jsonObject.getString("message")
                     Log.d(Global.TAG, "PostRegister: $jsonObject")
-                    Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "Todos los campos son obligatorios", Toast.LENGTH_LONG).show()
                 }
                 is NetworkError, is NoConnectionError, is TimeoutError -> {
                     Toast.makeText(this, "Por favor verifique su conexión a Internet", Toast.LENGTH_LONG).show()
                 }
             }
+            pbRegister.visibility = View.GONE
         }
         requestQueue.add(jsonObjectRequest)
     }
