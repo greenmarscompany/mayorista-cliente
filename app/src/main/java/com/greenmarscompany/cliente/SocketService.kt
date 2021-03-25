@@ -3,7 +3,6 @@ package com.greenmarscompany.cliente
 import android.app.Application
 import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
-import com.greenmarscompany.cliente.Global
 import com.greenmarscompany.cliente.persistence.DatabaseClient
 import com.greenmarscompany.cliente.persistence.Session
 import org.json.JSONException
@@ -22,20 +21,25 @@ class SocketService : Application() {
                     .appDatabase
                     .acountDao
                     .getUser(id_user)
-            val json_connect = JSONObject()
-            val opts = IO.Options()
-            // opts.forceNew = true;
-            opts.reconnection = true
-            opts.query = "auth_token=thisgo77"
-            try {
-                json_connect.put("ID", "US01")
-                json_connect.put("TOKEN", cuenta.token)
-                json_connect.put("ID_CLIENT", id_user)
-            } catch (e: JSONException) {
-                e.printStackTrace()
+            if(cuenta == null) {
+                return
+            } else {
+                val json_connect = JSONObject()
+                val opts = IO.Options()
+                // opts.forceNew = true;
+                opts.reconnection = true
+                opts.query = "auth_token=thisgo77"
+                try {
+                    json_connect.put("ID", "US01")
+                    json_connect.put("TOKEN", cuenta.token)
+                    json_connect.put("ID_CLIENT", id_user)
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+
+                mSocket = IO.socket(Global.URL_NODE, opts)
             }
 
-            mSocket = IO.socket(Global.URL_NODE, opts)
         }catch (e: URISyntaxException) {
             throw RuntimeException(e)
         }
