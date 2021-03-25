@@ -6,22 +6,37 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.greenmarscompany.cliente.login.LoginActivity;
+import com.greenmarscompany.cliente.persistence.Session;
 
-public class Cart extends AppCompatActivity{
+import java.util.Objects;
+
+
+public class Cart extends AppCompatActivity {
 
     Toolbar toolbar;
 
     @Override
-    protected void onCreate(android.os.Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_cart);
+
+        int iduser = new Session(getApplicationContext()).getToken();
+        if (iduser == 0 || iduser < 0) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         //--
         toolbar = findViewById(R.id.navigationToolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         //--
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

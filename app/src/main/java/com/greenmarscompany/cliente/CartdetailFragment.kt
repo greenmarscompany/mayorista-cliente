@@ -10,9 +10,10 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.*
+import com.android.volley.ServerError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
@@ -40,13 +41,11 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
     private var cartDetails: List<ECart>? = null
 
     companion object {
-        private const val TAG: String = "GAS"
+        private const val TAG: String = Global.TAG
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_cartdetail, container, false)
-        val socketService: SocketService = activity?.application as SocketService
-        socket = socketService.getMSocket()!!
         initSocket()
 
         recyclerView = view.findViewById(R.id.CartDetailContainer)
@@ -185,7 +184,6 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         }
         val baseURL = Global.URL_HOST
         val url = "$baseURL/client/order/"
-        println(jsonObject.toString())
         val jsonObjectRequest: JsonObjectRequest = object : JsonObjectRequest(Method.POST, url, jsonObject, { response ->
             try {
                 val status = response.getInt("status")
@@ -244,26 +242,40 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
     }
 
     private fun initSocket() {
-        socket.on(Socket.EVENT_CONNECT) { args: Array<Any?>? ->
-            Log.d(TAG, "emitiendo new conect")
-            val data = JSONObject()
-            if (context == null) return@on
-            val id = Session(context).token
-            val cuenta1 = DatabaseClient.getInstance(activity)
-                    .appDatabase
-                    .acountDao
-                    .getUser(id)
-            try {
-                data.put("ID", cuenta1.id)
-                data.put("type", "client")
-                Log.d(TAG, "conect $data")
-                socket.emit("new connect", data)
-            } catch (e: JSONException) {
-                e.printStackTrace()
+        if (context == null) return
+        val data = JSONObject()
+        val iduser = Session(context).token
+        val cuenta = DatabaseClient.getInstance(context)
+                .appDatabase
+                .acountDao
+                .getUser(iduser)
+        //-----
+        val jsonObject = JSONObject()
+        val opts: IO.Options = IO.Options()
+
+        opts.reconnection = true
+        opts.query = "auth_token=thisgo77"
+        jsonObject.put("ID", "US01")
+
+        socket = IO.socket(Global.URL_NODE, opts)
+        socket.let {
+            it.connect()
+            it.on(Socket.EVENT_CONNECT) {
+                Log.d(TAG, "emitiendo new conect")
+                try {
+                    data.put("ID", cuenta.id)
+                    data.put("type", "client")
+                    Log.d(TAG, "conect $data")
+                    socket.emit("new connect", data)
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+                val date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
+                Log.d(TAG, "SERVER connect $date")
             }
-            val date = DateFormat.getDateTimeInstance().format(Calendar.getInstance().time)
-            Log.d(TAG, "SERVER connect $date")
         }
+
+
     }
 
     override fun onDestroy() {
