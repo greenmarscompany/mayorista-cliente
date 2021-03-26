@@ -190,8 +190,9 @@ public class MisPedidosAdapter extends RecyclerView.Adapter<MisPedidosAdapter.vi
             String url = Global.URL_HOST + "/order/delete";
             JsonObjectRequest jsonObjectRequest =
                     new JsonObjectRequest(Request.Method.PUT, url, jsonObject, response -> {
-                        notifyItemRemoved(position);
                         data.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, data.size());
                         Toast.makeText(context, "Se elimino el pedido", Toast.LENGTH_SHORT).show();
                     }, error -> {
                         Log.d("Volley get", "error voley" + error.toString());

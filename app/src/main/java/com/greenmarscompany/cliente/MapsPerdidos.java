@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class MapsPerdidos extends androidx.fragment.app.Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MapsPerdidos extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -48,8 +49,6 @@ public class MapsPerdidos extends androidx.fragment.app.Fragment implements OnMa
     private ArrayList<LatLng> mMarkedPoints;
 
     private static final int DEFAULT_ZOOM = 16;
-
-    private OnFragmentInteractionListener mListener;
 
     public MapsPerdidos() {
 
@@ -87,29 +86,6 @@ public class MapsPerdidos extends androidx.fragment.app.Fragment implements OnMa
         mMarkedPoints = new ArrayList<>();
 
         return view;
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override

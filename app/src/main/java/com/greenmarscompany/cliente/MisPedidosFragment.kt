@@ -212,10 +212,10 @@ class MisPedidosFragment : Fragment() {
                         val transaction: FragmentTransaction = manager.beginTransaction()
                         val status1: String = orders!!.get(recyclerView!!.getChildAdapterPosition((v)!!)).status
                         if ((status1 == "confirm")) {
-                            val misPedidosFragment: MapsPerdidos = MapsPerdidos()
-                            val bundle: Bundle = Bundle()
-                            val d_company: LatLng = orders!!.get(recyclerView!!.getChildAdapterPosition((v))).companyDirection
-                            val d_client: LatLng = orders!!.get(recyclerView!!.getChildAdapterPosition((v))).clientDirection
+                            val misPedidosFragment = MapsPerdidos()
+                            val bundle = Bundle()
+                            val d_company: LatLng = orders!![recyclerView.getChildAdapterPosition((v))].companyDirection
+                            val d_client: LatLng = orders!![recyclerView.getChildAdapterPosition((v))].clientDirection
                             bundle.putParcelable("DCOMPANY", d_company)
                             bundle.putParcelable("DCLIENT", d_client)
                             misPedidosFragment.arguments = bundle
