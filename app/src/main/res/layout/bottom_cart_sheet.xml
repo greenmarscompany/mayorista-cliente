@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <!--app:behavior_peekHeight="0dp"-->
     <LinearLayout
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
@@ -14,22 +16,48 @@
         app:behavior_peekHeight="0dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <!--<TextView
+        <TextView
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:gravity="center"
-            android:text="Proceder con el pedido"
+            android:text="@string/pay_title_sheet"
             android:textColor="@color/marcasTitle"
             android:textSize="18sp"
-            android:textStyle="bold" />-->
+            android:textStyle="bold" />
 
 
         <RadioGroup
             android:id="@+id/groupMetodo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rbFinanciar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_financiamiento"
+                android:drawablePadding="10dp"
+                android:layoutDirection="rtl"
+                android:padding="5dp"
+                android:text="@string/pay_financiar"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                android:theme="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/rbRecyclaje"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_reciclaje"
+                android:drawablePadding="10dp"
+                android:layoutDirection="rtl"
+                android:padding="5dp"
+                android:text="@string/pay_recyclaje"
+                android:textAlignment="textStart"
+                android:textStyle="bold"
+                android:theme="@style/RadioButton" />
 
             <RadioButton
                 android:id="@+id/rbTunki"

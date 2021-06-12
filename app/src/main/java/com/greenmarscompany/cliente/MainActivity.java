@@ -246,8 +246,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction = fragmentManager.beginTransaction();
 
 
-        if(getIntent().getExtras() != null) {
-            if(getIntent().getStringExtra("fragment").equals("pedidos")) {
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getStringExtra("fragment") == null) return;
+            if (getIntent().getStringExtra("fragment").equals("pedidos")) {
                 fragmentTransaction.replace(R.id.navigationContainer, new MisPedidosFragment());
                 fragmentTransaction.commit();
                 return;

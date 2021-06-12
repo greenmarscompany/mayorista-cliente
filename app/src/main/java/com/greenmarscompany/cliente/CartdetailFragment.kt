@@ -62,17 +62,21 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
             val index = efectivoGroup.indexOfChild(radioButton)
             if (index == 0) {
                 when (indexRadioTarejeta) {
-                    0 -> tipoComprobante = "tunki-boleta"
-                    1 -> tipoComprobante = "yape-boleta"
-                    2 -> tipoComprobante = "tarjeta-boleta"
-                    3 -> tipoComprobante = "boleta"
+                    0 -> tipoComprobante = "financiar-boleta"
+                    1 -> tipoComprobante = "reciclaje-boleta"
+                    2 -> tipoComprobante = "tunki-boleta"
+                    3 -> tipoComprobante = "yape-boleta"
+                    4 -> tipoComprobante = "tarjeta-boleta"
+                    5 -> tipoComprobante = "boleta"
                 }
             } else if (index == 1) {
                 when (indexRadioTarejeta) {
-                    0 -> tipoComprobante = "tunki-factura"
-                    1 -> tipoComprobante = "yape-factura"
-                    2 -> tipoComprobante = "tarjeta-factura"
-                    3 -> tipoComprobante = "factura"
+                    0 -> tipoComprobante = "financiar-factura"
+                    1 -> tipoComprobante = "reciclaje-factura"
+                    2 -> tipoComprobante = "tunki-factura"
+                    3 -> tipoComprobante = "yape-factura"
+                    4 -> tipoComprobante = "tarjeta-factura"
+                    5 -> tipoComprobante = "factura"
                 }
             }
             Log.d(TAG, "Event Efectivo: $tipoComprobante")
@@ -82,21 +86,31 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
             when (groupMetodo.indexOfChild(radioButton)) {
                 0 -> {
                     indexRadioTarejeta = 0
-                    tipoComprobante = if (voucher.isChecked) "tunki-boleta" else "tunki-factura"
+                    tipoComprobante = if (voucher.isChecked) "financiar-boleta" else "financiar-factura"
                     isTarjeta = true
                 }
                 1 -> {
                     indexRadioTarejeta = 1
-                    tipoComprobante = if (voucher.isChecked) "yape-boleta" else "yape-factura"
+                    tipoComprobante = if (voucher.isChecked) "reciclaje-boleta" else "reciclaje-factura"
                     isTarjeta = true
                 }
                 2 -> {
                     indexRadioTarejeta = 2
-                    tipoComprobante = if (voucher.isChecked) "tarjeta-boleta" else "tarjeta-factura"
+                    tipoComprobante = if (voucher.isChecked) "tunki-boleta" else "tunki-factura"
                     isTarjeta = true
                 }
                 3 -> {
                     indexRadioTarejeta = 3
+                    tipoComprobante = if (voucher.isChecked) "yape-boleta" else "yape-factura"
+                    isTarjeta = true
+                }
+                4 -> {
+                    indexRadioTarejeta = 4
+                    tipoComprobante = if (voucher.isChecked) "tarjeta-boleta" else "tarjeta-factura"
+                    isTarjeta = true
+                }
+                5 -> {
+                    indexRadioTarejeta = 5
                     tipoComprobante = if (voucher.isChecked) "boleta" else "factura"
                     isTarjeta = false
                 }

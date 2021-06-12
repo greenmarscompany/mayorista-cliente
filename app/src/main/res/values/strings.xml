@@ -30,10 +30,13 @@
 
 
     <!-- procesar pedido cart activity-->
+    <string name="pay_title_sheet">Seleccione un método de pago</string>
     <string name="pay_credit_card">Pagaré con tarjeta en casa</string>
     <string name="pay_yape">Pagaré con Yape</string>
     <string name="pay_tunki">Pagaré con Tunki</string>
     <string name="pay_money">Pagaré con efectivo en casa</string>
+    <string name="pay_recyclaje">Pagaré con reciclaje</string>
+    <string name="pay_financiar">Financiar</string>
 
 
     <string name="address">Escoge el lugar de entrega: </string>
