@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.DefaultRetryPolicy
@@ -46,7 +47,11 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         private const val TAG: String = Global.TAG
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_cartdetail, container, false)
         initSocket()
 
@@ -86,12 +91,14 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
             when (groupMetodo.indexOfChild(radioButton)) {
                 0 -> {
                     indexRadioTarejeta = 0
-                    tipoComprobante = if (voucher.isChecked) "financiar-boleta" else "financiar-factura"
+                    tipoComprobante =
+                        if (voucher.isChecked) "financiar-boleta" else "financiar-factura"
                     isTarjeta = true
                 }
                 1 -> {
                     indexRadioTarejeta = 1
-                    tipoComprobante = if (voucher.isChecked) "reciclaje-boleta" else "reciclaje-factura"
+                    tipoComprobante =
+                        if (voucher.isChecked) "reciclaje-boleta" else "reciclaje-factura"
                     isTarjeta = true
                 }
                 2 -> {
@@ -124,9 +131,9 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         llenarCarrito()
         procesarPedido = view.findViewById(R.id.ButtonCartProcesarPedido)
         val eCarts = DatabaseClient.getInstance(context)
-                .appDatabase
-                .cartDao
-                .carts!!
+            .appDatabase
+            .cartDao
+            .carts!!
         if (eCarts.size == 0) {
             procesarPedido.isEnabled = false
             procesarPedido.setBackgroundResource(R.drawable.custom_button_gray)
@@ -167,100 +174,113 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
     // Confirmar pedido
     private fun confirmarPedido() {
         val acount = DatabaseClient.getInstance(context)
-                .appDatabase
-                .acountDao
-                .getUser(Session(context).token)
-        if (!isTarjeta) {
-            tipoComprobante = if (voucher!!.isChecked) "boleta" else "factura"
-        }
-        val jsonObject = JSONObject()
-        val queue = Volley.newRequestQueue(Objects.requireNonNull(context))
-        try {
-            jsonObject.put("voucher", tipoComprobante)
-            jsonObject.put("latitud", acount.latitud.toString())
-            jsonObject.put("longitud", acount.longitud.toString())
-            jsonObject.put("client_id", Session(context).token)
-            val jsonArray = JSONArray()
-            val eCarts = DatabaseClient.getInstance(context)
+            .appDatabase
+            .acountDao
+            .getUser(Session(context).token)
+
+        //--
+        if (tipoComprobante.equals("financiar-boleta") || tipoComprobante.equals("financiar-factura")) {
+            val fragmenManager = activity?.supportFragmentManager
+            val transaction = fragmenManager?.beginTransaction()
+            transaction?.replace(R.id.navigationContainer, FinanciarFragment())
+            transaction?.addToBackStack(null)
+            transaction?.commit()
+        } else {
+            if (!isTarjeta) {
+                tipoComprobante = if (voucher.isChecked) "boleta" else "factura"
+            }
+            val jsonObject = JSONObject()
+            val queue = Volley.newRequestQueue(Objects.requireNonNull(context))
+            try {
+                jsonObject.put("voucher", tipoComprobante)
+                jsonObject.put("latitud", acount.latitud.toString())
+                jsonObject.put("longitud", acount.longitud.toString())
+                jsonObject.put("client_id", Session(context).token)
+                val jsonArray = JSONArray()
+                val eCarts = DatabaseClient.getInstance(context)
                     .appDatabase
                     .cartDao
                     .carts
-            if (eCarts != null) {
-                for (e in eCarts) {
-                    val orders_detal = JSONObject()
-                    orders_detal.put("product_id", e.productRegister)
-                    orders_detal.put("quantity", e.cantidad)
-                    orders_detal.put("unit_price", e.price.toDouble())
-                    jsonArray.put(orders_detal)
+                if (eCarts != null) {
+                    for (e in eCarts) {
+                        val orders_detal = JSONObject()
+                        orders_detal.put("product_id", e.productRegister)
+                        orders_detal.put("quantity", e.cantidad)
+                        orders_detal.put("unit_price", e.price.toDouble())
+                        jsonArray.put(orders_detal)
+                    }
                 }
-            }
-            jsonObject.put("detalle_orden", jsonArray)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        val baseURL = Global.URL_HOST
-        val url = "$baseURL/client/order/"
-        val jsonObjectRequest: JsonObjectRequest = object : JsonObjectRequest(Method.POST, url, jsonObject, { response ->
-            try {
-                val status = response.getInt("status")
-                if (status == 201) {
-                    val message = response.getString("message")
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                    val datas = JSONObject()
-                    datas.put("id", response.getJSONObject("data").getInt("order_id"))
-                    datas.put("latitude", acount.latitud)
-                    datas.put("longitude", acount.longitud)
-                    socket.emit("get orders", datas)
-                    Log.d(TAG, "confirmarPedido: $datas")
-                    DatabaseClient.getInstance(context)
-                            .appDatabase
-                            .cartDao
-                            .deleteAllCart()
-
-                    val intent = Intent(context, MainActivity::class.java)
-                    intent.putExtra("fragment", "pedidos")
-                    startActivity(intent)
-                    activity!!.finish()
-                }
+                jsonObject.put("detalle_orden", jsonArray)
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-        }, { error ->
-            Log.d("Volley get", "error voley$error")
-            val response = error.networkResponse
-            if (response != null) {
-                when (error) {
-                    is ServerError -> {
-                        val res = String(response.data)
-                        Log.d(TAG, "ConfirmarPedido: $res")
+            val baseURL = Global.URL_HOST
+            val url = "$baseURL/client/order/"
+            val jsonObjectRequest: JsonObjectRequest =
+                object : JsonObjectRequest(Method.POST, url, jsonObject, { response ->
+                    try {
+                        val status = response.getInt("status")
+                        if (status == 201) {
+                            val message = response.getString("message")
+                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                            val datas = JSONObject()
+                            datas.put("id", response.getJSONObject("data").getInt("order_id"))
+                            datas.put("latitude", acount.latitud)
+                            datas.put("longitude", acount.longitud)
+                            socket.emit("get orders", datas)
+                            Log.d(TAG, "confirmarPedido: $datas")
+                            DatabaseClient.getInstance(context)
+                                .appDatabase
+                                .cartDao
+                                .deleteAllCart()
+
+                            val intent = Intent(context, MainActivity::class.java)
+                            intent.putExtra("fragment", "pedidos")
+                            startActivity(intent)
+                            activity!!.finish()
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
                     }
-                    is TimeoutError -> {
-                        Toast.makeText(context, "Opsss Timeout", Toast.LENGTH_LONG).show()
+                }, { error ->
+                    Log.d("Volley get", "error voley$error")
+                    val response = error.networkResponse
+                    if (response != null) {
+                        when (error) {
+                            is ServerError -> {
+                                val res = String(response.data)
+                                Log.d(TAG, "ConfirmarPedido: $res")
+                            }
+                            is TimeoutError -> {
+                                Toast.makeText(context, "Opsss Timeout", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }) {
+                    override fun getHeaders(): Map<String, String> {
+                        val headers: MutableMap<String, String> = HashMap()
+                        Log.d("Voley get", acount.token)
+                        headers["Authorization"] = "JWT " + acount.token
+                        headers["Content-Type"] = "application/json"
+                        return headers
                     }
                 }
-            }
-        }) {
-            override fun getHeaders(): Map<String, String> {
-                val headers: MutableMap<String, String> = HashMap()
-                Log.d("Voley get", acount.token)
-                headers["Authorization"] = "JWT " + acount.token
-                headers["Content-Type"] = "application/json"
-                return headers
-            }
-        }
-        jsonObjectRequest.retryPolicy = DefaultRetryPolicy(
+            jsonObjectRequest.retryPolicy = DefaultRetryPolicy(
                 Global.MY_DEFAULT_TIMEOUT,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-        queue.add(jsonObjectRequest)
+            )
+            queue.add(jsonObjectRequest)
+        }
+
+
     }
 
     private fun llenarCarrito() {
         cartDetails = DatabaseClient.getInstance(context)
-                .appDatabase
-                .cartDao
-                .carts
+            .appDatabase
+            .cartDao
+            .carts
         val cartDetailAdapter = CartDetailAdapter(cartDetails, this)
         recyclerView.adapter = cartDetailAdapter
     }
@@ -270,9 +290,9 @@ class CartdetailFragment : Fragment(), CartDetailAdapter.EventListener {
         val data = JSONObject()
         val iduser = Session(context).token
         val cuenta = DatabaseClient.getInstance(context)
-                .appDatabase
-                .acountDao
-                .getUser(iduser)
+            .appDatabase
+            .acountDao
+            .getUser(iduser)
         //-----
         val jsonObject = JSONObject()
         val opts: IO.Options = IO.Options()

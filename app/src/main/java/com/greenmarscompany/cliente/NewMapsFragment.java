@@ -9,11 +9,16 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +60,8 @@ import com.smarteist.autoimageslider.SliderView;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class NewMapsFragment extends androidx.fragment.app.Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -242,33 +249,25 @@ public class NewMapsFragment extends androidx.fragment.app.Fragment implements O
         getDeviceLocation();
         updateLocationUI();
 
-        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                if (currentMarker != null) {
-                    currentMarker.remove();
-                }
+        int token = new Session(getContext()).getToken();
+        Acount acount = DatabaseClient.getInstance(getContext())
+                .getAppDatabase()
+                .getAcountDao()
+                .getUser(token);
 
-                LatLng position = map.getCameraPosition().target;
-                startLng = new LatLng(position.latitude, position.longitude);
-                String direccion = getStringAddress(startLng.latitude, startLng.longitude);
-                int token = new Session(getContext()).getToken();
-                //Todo actualizar
-                Acount acount = DatabaseClient.getInstance(getContext())
-                        .getAppDatabase()
-                        .getAcountDao()
-                        .getUser(token);
-                acount.setLatitud(startLng.latitude);
-                acount.setLongitud(startLng.longitude);
-                DatabaseClient.getInstance(getContext())
-                        .getAppDatabase()
-                        .getAcountDao()
-                        .updateUser(acount);
-                //     MapSelection.latitud =startLng.latitude;
-                //  MapSelection.longitud= startLng.longitude;
-
-                lblDireccion.setText(direccion);
+        map.setOnCameraIdleListener(() -> {
+            if (currentMarker != null) {
+                currentMarker.remove();
             }
+
+            LatLng position = map.getCameraPosition().target;
+            getAddressFromLocation(position.latitude, position.longitude, getContext(), new GeocoderHandler());
+            acount.setLatitud(position.latitude);
+            acount.setLongitud(position.longitude);
+            DatabaseClient.getInstance(getContext())
+                    .getAppDatabase()
+                    .getAcountDao()
+                    .updateUser(acount);
         });
     }
 
@@ -289,6 +288,12 @@ public class NewMapsFragment extends androidx.fragment.app.Fragment implements O
     }
 
     private void getDeviceLocation() {
+        int token = new Session(getContext()).getToken();
+        Acount acount = DatabaseClient.getInstance(getContext())
+                .getAppDatabase()
+                .getAcountDao()
+                .getUser(token);
+
         try {
             if (mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
@@ -304,21 +309,14 @@ public class NewMapsFragment extends androidx.fragment.app.Fragment implements O
                                 map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
                                 startLng = latLng;
-                                String direccion = getStringAddress(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                                int token = new Session(getContext()).getToken();
-                                Acount acount = DatabaseClient.getInstance(getContext())
-                                        .getAppDatabase()
-                                        .getAcountDao()
-                                        .getUser(token);
+                                getAddressFromLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(), getContext(), new GeocoderHandler());
+
                                 acount.setLatitud(startLng.latitude);
                                 acount.setLongitud(startLng.longitude);
                                 DatabaseClient.getInstance(getContext())
                                         .getAppDatabase()
                                         .getAcountDao()
                                         .updateUser(acount);
-                                //   MapSelection.latitud =mLastKnownLocation.getLatitude();
-                                //   MapSelection.longitud= mLastKnownLocation.getLongitude();
-                                lblDireccion.setText(direccion);
 
                             } else {
                                 new GpsUtils(Objects.requireNonNull(getActivity())).turnGPSOn(new GpsUtils.onGpsListener() {
@@ -414,6 +412,54 @@ public class NewMapsFragment extends androidx.fragment.app.Fragment implements O
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-13.5179145, -71.9771895), 16));
 
             return "No se le puede ubicar, por favor active su GPS";
+        }
+    }
+
+    public static void getAddressFromLocation(Double latitud, Double longitud, final Context context, final Handler handler) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                String result = null;
+                try {
+                    List<Address> list = geocoder.getFromLocation(latitud, longitud, 1);
+                    if (list != null && list.size() > 0) {
+                        Address address = list.get(0);
+                        result = address.getAddressLine(0) + ", " + address.getLocality();
+                    }
+                } catch (IOException e) {
+                    Log.w(TAG, "Get String Address: ", e);
+                } finally {
+                    Message msg = Message.obtain();
+                    msg.setTarget(handler);
+                    if (result != null) {
+                        msg.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("address", result);
+                        msg.setData(bundle);
+                    } else {
+                        msg.what = 0;
+                    }
+                    msg.sendToTarget();
+                }
+
+            }
+        };
+        thread.start();
+    }
+
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            String result;
+            if (msg.what == 1) {
+                Bundle bundle = msg.getData();
+                result = bundle.getString("address");
+            } else {
+                result = null;
+            }
+
+            lblDireccion.setText(result);
         }
     }
 
