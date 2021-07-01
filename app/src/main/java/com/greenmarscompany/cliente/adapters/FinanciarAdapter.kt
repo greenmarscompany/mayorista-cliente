@@ -50,14 +50,14 @@ data class FinanciarAdapter(val context: Context, var financiar: ArrayList<Finan
         fun bind(financiar: Financiar) {
             bancoNombre.text = financiar.name;
             when (financiar.imageUrl) {
-                "banco-nacion" -> imageBanco.setImageResource(R.drawable.mayorista_logo)
-                "banbif" -> imageBanco.setImageResource(R.drawable.mayorista_logo)
-                "bbva" -> imageBanco.setImageResource(R.drawable.mayorista_logo)
-                "bcp" -> imageBanco.setImageResource(R.drawable.mayorista_logo)
-                "caja-arequipa" -> imageBanco.setImageResource(R.drawable.mayorista_logo)
-                "caja-cusco" -> imageBanco.setImageResource(R.drawable.mayorista_logo)
-                "interbank" -> imageBanco.setImageResource(R.drawable.mayorista_logo)
-                "scotiabank" -> imageBanco.setImageResource(R.drawable.mayorista_logo)
+                "banco-nacion" -> imageBanco.setImageResource(R.drawable.bbnc)
+                "banbif" -> imageBanco.setImageResource(R.drawable.bambif)
+                "bbva" -> imageBanco.setImageResource(R.drawable.bbva)
+                "bcp" -> imageBanco.setImageResource(R.drawable.bcp)
+                "caja-arequipa" -> imageBanco.setImageResource(R.drawable.cja_arequipa)
+                "caja-cusco" -> imageBanco.setImageResource(R.drawable.caja_cusco)
+                "interbank" -> imageBanco.setImageResource(R.drawable.interbank)
+                "scotiabank" -> imageBanco.setImageResource(R.drawable.scotibank)
             }
         }
     }

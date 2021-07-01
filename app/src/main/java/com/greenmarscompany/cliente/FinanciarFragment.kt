@@ -34,8 +34,12 @@ class FinanciarFragment : Fragment() {
         val listFinanciar: ArrayList<Financiar> = ArrayList()
         listFinanciar.add(Financiar(1, "Banco de la nacion", "banco-nacion"))
         listFinanciar.add(Financiar(2, "Banbif", "banbif"))
-        listFinanciar.add(Financiar(3, "Interbank", ""))
-        listFinanciar.add(Financiar(4, "Credinca", ""))
+        listFinanciar.add(Financiar(3, "BBVA", "bbva"))
+        listFinanciar.add(Financiar(4, "BCP", "bcp"))
+        listFinanciar.add(Financiar(5, "Caja Arequipa", "caja-arequipa"))
+        listFinanciar.add(Financiar(6, "Caja Cusco", "caja-cusco"))
+        listFinanciar.add(Financiar(7, "Interbank", "interbank"))
+        listFinanciar.add(Financiar(8, "Scotiabank", "scotiabank"))
 
         financiarAdapter = FinanciarAdapter(context!!, listFinanciar)
         rvBancos.adapter = financiarAdapter
